@@ -28,16 +28,8 @@
 #
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-require 'uri'
-
 class ActionCableHostProvider
   def host
-    return ENV['ACTION_CABLE_HOST'] unless ENV['ACTION_CABLE_HOST'].nil?
-
-    unless ENV['VCAP_APPLICATION'].nil?
-      uri = JSON.parse(ENV['VCAP_APPLICATION']).fetch('uris')[0]
-      uri = "//#{uri}" if URI(uri).scheme.nil?
-      URI.parse(uri).host
-    end
+    ENV['ACTION_CABLE_HOST']
   end
 end

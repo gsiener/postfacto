@@ -28,22 +28,10 @@
 #
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-require 'cf-app-utils'
-
 class RedisConfigurationProvider
   def redis_config
     return nil unless ENV['RAILS_ENV'] == 'production'
-    return ENV['REDIS_URL'] unless ENV['REDIS_URL'].nil?
 
-    unless ENV['VCAP_SERVICES'].nil?
-      c = CF::App::Credentials.find_by_service_tag('redis')
-      host = c['hostname'] || c.fetch('host')
-      Addressable::URI.new(
-        scheme: 'redis',
-        host: host,
-        password: c['password'],
-        port: c.fetch('port')
-      ).normalize.to_s
-    end
+    ENV['REDIS_URL']
   end
 end

@@ -42,7 +42,6 @@ Postfacto is a free, open-source, self-hosted retrospective collaboration tool d
 │   └── package.json
 │
 ├── e2e/                          # End-to-end tests (Capybara/Selenium)
-├── deployment/                   # Deployment configs (CF, Heroku, K8s)
 └── docker/                       # Docker configurations
 ```
 
@@ -189,11 +188,7 @@ cd web && npm test -- --testPathPattern="path/to/test"
 
 ## Deployment
 
-Supports multiple platforms:
-- Cloud Foundry (`deployment/cf/`)
-- Heroku (`deployment/heroku/`)
-- Kubernetes/Helm (`deployment/helm/`)
-- Docker (`Dockerfile`)
+Docker-based deployment via the root `Dockerfile`.
 
 ## Known Issues & Workarounds
 

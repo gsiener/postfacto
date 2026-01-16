@@ -36,17 +36,16 @@ describe RedisConfigurationProvider do
 
   describe '#redis_config' do
     around do |example|
-      ClimateControl.modify('RAILS_ENV' => rails_env, 'VCAP_SERVICES' => vcap_services, 'REDIS_URL' => redis_url) do
+      ClimateControl.modify('RAILS_ENV' => rails_env, 'REDIS_URL' => redis_url) do
         example.run
       end
     end
 
     context 'when running outside of production' do
       let(:rails_env) { 'development' }
-      let(:vcap_services) { 'unused-vcap-services-value' }
-      let(:redis_url) { 'unused-redis-url=-value' }
+      let(:redis_url) { 'redis://user:pass@hostname.com:420' }
 
-      it 'is nil ' do
+      it 'is nil' do
         expect(subject.redis_config).to be_nil
       end
     end
@@ -57,109 +56,16 @@ describe RedisConfigurationProvider do
       context 'when REDIS_URL is defined in the environment' do
         let(:redis_url) { 'redis://user:pass@hostname.com:420' }
 
-        context 'when VCAP_SERVICES is defined in the environment' do
-          let(:vcap_services) do
-            {
-              'redis' => [
-                {
-                  'tags' => 'redis',
-                  'credentials' => {
-                    'hostname' => 'hostname',
-                    'password' => 'irrelevant',
-                    'port' => 234
-                  }
-                }
-              ]
-            }.to_json
-          end
-
-          it 'returns the url from REDIS_URL' do
-            expect(subject.redis_config).to eq('redis://user:pass@hostname.com:420')
-          end
-        end
-
-        context 'when VCAP_SERVICES is NOT defined in the environment' do
-          let(:vcap_services) { nil }
-          it 'returns the url from REDIS_URL' do
-            expect(subject.redis_config).to eq('redis://user:pass@hostname.com:420')
-          end
+        it 'returns the url from REDIS_URL' do
+          expect(subject.redis_config).to eq('redis://user:pass@hostname.com:420')
         end
       end
 
       context 'when REDIS_URL is not defined in the environment' do
         let(:redis_url) { nil }
 
-        context 'when VCAP_SERVICES is defined in the environment' do
-          context 'and host is declared as hostname' do
-            let(:vcap_services) do
-              {
-                'redis' => [
-                  {
-                    'tags' => 'redis',
-                    'credentials' => {
-                      'hostname' => 'hostname',
-                      'password' => 'pass',
-                      'port' => 234
-                    }
-                  }
-                ]
-              }.to_json
-            end
-
-            it 'builds a URL based upon the redis service described by vcap services' do
-              expect(subject.redis_config).to eq('redis://:pass@hostname:234')
-            end
-          end
-
-          context 'and host is declared as host' do
-            let(:vcap_services) do
-              {
-                'redis' => [
-                  {
-                    'tags' => 'redis',
-                    'credentials' => {
-                      'host' => 'host',
-                      'password' => 'pass',
-                      'port' => 234
-                    }
-                  }
-                ]
-              }.to_json
-            end
-
-            it 'builds a URL based upon the redis service described by vcap services' do
-              expect(subject.redis_config).to eq('redis://:pass@host:234')
-            end
-          end
-
-          context 'and the password contains special characters' do
-            let(:vcap_services) do
-              {
-                'redis' => [
-                  {
-                    'tags' => 'redis',
-                    'credentials' => {
-                      'hostname' => 'hostname',
-                      'password' => 'pass/wo=d',
-                      'port' => 234
-                    }
-                  }
-                ]
-              }.to_json
-            end
-
-            it 'builds a URL based upon the redis service described by vcap services' do
-              expect(subject.redis_config).to eq('redis://:pass%2Fwo%3Dd@hostname:234')
-            end
-          end
-        end
-
-        context 'when VCAP_SERVICES is NOT defined in the environment' do
-          let(:vcap_services) { nil }
-
-          it 'returns nil' do
-            expect(subject.redis_config).to be_nil
-          end
+        it 'returns nil' do
+          expect(subject.redis_config).to be_nil
         end
       end
     end

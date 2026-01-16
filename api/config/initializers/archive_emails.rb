@@ -41,23 +41,13 @@ FROM_ADDRESS = if Rails.env.production?
                end
 
 if ARCHIVE_EMAILS && Rails.env.production?
-  ActionMailer::Base.smtp_settings = begin
-    if ENV['VCAP_SERVICES'].nil?
-      username = ENV.fetch('SENDGRID_USERNAME')
-      password = ENV.fetch('SENDGRID_PASSWORD')
-      sendgrid_config = SendgridConfiguration('smtp.sendgrid.net', username, password)
-    else
-      sendgrid_config = SendgridVCAPParser.get_configuration(ENV['VCAP_SERVICES'])
-    end
-
-    ActionMailer::Base.smtp_settings = {
-      address: sendgrid_config.hostname,
-      port: '587',
-      authentication: :plain,
-      user_name: sendgrid_config.username,
-      password: sendgrid_config.password,
-      domain: SMTP_DOMAIN,
-      enable_starttls_auto: true
-    }
-  end
+  ActionMailer::Base.smtp_settings = {
+    address: 'smtp.sendgrid.net',
+    port: '587',
+    authentication: :plain,
+    user_name: ENV.fetch('SENDGRID_USERNAME'),
+    password: ENV.fetch('SENDGRID_PASSWORD'),
+    domain: SMTP_DOMAIN,
+    enable_starttls_auto: true
+  }
 end
