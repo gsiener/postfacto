@@ -48,7 +48,7 @@ class ItemsController < ApplicationController
   end
 
   def vote
-    @item = @retro.items.find(params.fetch(:item_id))
+    @item = @retro.items.find(params.fetch(:id))
     @item.vote!
     broadcast
     render 'show'
@@ -62,7 +62,7 @@ class ItemsController < ApplicationController
   end
 
   def done
-    item = @retro.items.find(params.fetch(:item_id))
+    item = @retro.items.find(params.fetch(:id))
     item.done = done_value
     item.save!
 

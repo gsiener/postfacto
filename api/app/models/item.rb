@@ -32,9 +32,17 @@ class Item < ActiveRecord::Base
   belongs_to :retro, optional: true
   belongs_to :archive, optional: true
 
-  enum category: { happy: 'happy', meh: 'meh', sad: 'sad' }
+  enum :category, { happy: 'happy', meh: 'meh', sad: 'sad' }
 
   before_destroy :clear_highlight
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[id description category vote_count done created_at updated_at archived_at archived retro_id archive_id]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[archive retro]
+  end
 
   def vote!
     increment! :vote_count

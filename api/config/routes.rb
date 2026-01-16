@@ -46,8 +46,10 @@ Rails.application.routes.draw do
       resources :settings, only: [:index]
       resources :action_items, only: [:create, :destroy, :update]
       resources :items, only: [:create, :update, :destroy] do
-        patch 'done', to: :done, controller: 'items'
-        post 'vote', to: :vote, controller: 'items'
+        member do
+          patch 'done'
+          post 'vote'
+        end
       end
       resource :discussion, only: [:create, :destroy, :update] do
         post 'transitions', controller: 'transitions'

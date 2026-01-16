@@ -36,7 +36,15 @@ class Retro < ActiveRecord::Base
   has_many :archives, dependent: :destroy
 
   belongs_to :user, optional: true
-  enum item_order: { time: 'time', votes: 'votes' }
+  enum :item_order, { time: 'time', votes: 'votes' }
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[id name slug is_private video_link created_at updated_at user_id item_order send_archive_email]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[items action_items archives user]
+  end
 
   MAX_SLUG_LENGTH = 236
 
@@ -88,7 +96,8 @@ class Retro < ActiveRecord::Base
 
   # aliasing this in order to limit changes required to API
   # TODO: change API and front end to refer to this key as just 'magic_link_enabled'
-  alias_attribute :is_magic_link_enabled, :magic_link_enabled
+  alias_method :is_magic_link_enabled, :magic_link_enabled
+  alias_method :is_magic_link_enabled=, :magic_link_enabled=
 
   def create_instruction_cards!
     I18n.t('instruction_cards.items').each do |category, descriptions|

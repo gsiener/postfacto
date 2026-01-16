@@ -61,7 +61,7 @@ ActiveRecord::Migration.maintain_test_schema!
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_paths = ["#{::Rails.root}/spec/fixtures"]
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -108,7 +108,7 @@ def token_for(item)
       'retros',
       CLOCK.current_time,
       nil,
-      Rails.application.secrets.secret_key_base
+      Rails.application.secret_key_base
     )
 
   when User
@@ -117,7 +117,7 @@ def token_for(item)
       'users',
       CLOCK.current_time,
       nil,
-      Rails.application.secrets.secret_key_base
+      Rails.application.secret_key_base
     )
   end
 end

@@ -59,7 +59,7 @@ module RetrosAuth
       'retros',
       CLOCK.current_time,
       Rails.configuration.session_time,
-      Rails.application.secrets.secret_key_base
+      Rails.application.secret_key_base
     )
   end
 
@@ -67,7 +67,7 @@ module RetrosAuth
     authenticate_with_http_token do |token, _options|
       @retro.slug == AuthToken.subject_for(
         token,
-        Rails.application.secrets.secret_key_base,
+        Rails.application.secret_key_base,
         'retros'
       )
     end

@@ -37,14 +37,14 @@ module UsersAuth
       'users',
       CLOCK.current_time,
       Rails.configuration.session_time,
-      Rails.application.secrets.secret_key_base
+      Rails.application.secret_key_base
     )
   end
 
   def load_and_authenticate_user
     email = AuthToken.subject_for(
       request.headers['X-AUTH-TOKEN'],
-      Rails.application.secrets.secret_key_base,
+      Rails.application.secret_key_base,
       'users'
     )
 

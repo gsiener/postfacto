@@ -78,7 +78,7 @@ class RetrosChannel < ApplicationCable::Channel
     return true unless retro.is_private?
     retro.slug == AuthToken.subject_for(
       api_token,
-      Rails.application.secrets.secret_key_base,
+      Rails.application.secret_key_base,
       'retros'
     )
   end
