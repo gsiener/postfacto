@@ -36,7 +36,7 @@ import * as PropTypes from 'prop-types';
  * Individual emoji button component
  * Renders a single clickable emoji
  */
-const EmojiButton = ({ emoji, onSelect }) => {
+const EmojiButton = ({emoji, onSelect}) => {
   const handleMouseDown = (event) => {
     onSelect(event, emoji);
   };

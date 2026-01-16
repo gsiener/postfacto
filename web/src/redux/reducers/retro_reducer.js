@@ -28,7 +28,7 @@
  *
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {updateOrCreateInArray} from './array_utils';
+import updateOrCreateInArray from './array_utils';
 
 const initialState = {
   currentRetro: {

@@ -32,29 +32,27 @@
 import React from 'react';
 import * as PropTypes from 'prop-types';
 import EmojiButton from './EmojiButton';
-import { fromCodePoints } from './emojiData';
+import {fromCodePoints} from './emojiData';
 
 /**
  * Emoji category section component
  * Renders a category header and all emojis within that category
  */
-const EmojiCategory = ({ name, values, onSelect }) => {
-  return (
-    <div className="emoji-selector-group">
-      <h1>{name}</h1>
-      {values.map((points) => {
-        const emoji = fromCodePoints(points);
-        return (
-          <EmojiButton
-            key={emoji}
-            emoji={emoji}
-            onSelect={onSelect}
-          />
-        );
-      })}
-    </div>
-  );
-};
+const EmojiCategory = ({name, values, onSelect}) => (
+  <div className="emoji-selector-group">
+    <h1>{name}</h1>
+    {values.map((points) => {
+      const emoji = fromCodePoints(points);
+      return (
+        <EmojiButton
+          key={emoji}
+          emoji={emoji}
+          onSelect={onSelect}
+        />
+      );
+    })}
+  </div>
+);
 
 EmojiCategory.propTypes = {
   name: PropTypes.string.isRequired,
@@ -62,7 +60,7 @@ EmojiCategory.propTypes = {
     PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.arrayOf(PropTypes.number),
-    ])
+    ]),
   ).isRequired,
   onSelect: PropTypes.func.isRequired,
 };

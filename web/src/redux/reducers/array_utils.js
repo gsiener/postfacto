@@ -38,7 +38,7 @@
  * @param {string} idKey - The key to use for identifying items (default: 'id')
  * @returns {Array} A new array with the item updated or added
  */
-export const updateOrCreateInArray = (array, item, idKey = 'id') => {
+const updateOrCreateInArray = (array, item, idKey = 'id') => {
   const position = array.findIndex((i) => i[idKey] === item[idKey]);
 
   if (position === -1) {
@@ -49,3 +49,5 @@ export const updateOrCreateInArray = (array, item, idKey = 'id') => {
   updatedArray[position] = item;
   return updatedArray;
 };
+
+export default updateOrCreateInArray;

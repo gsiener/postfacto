@@ -32,7 +32,7 @@
 import React from 'react';
 import * as PropTypes from 'prop-types';
 import EmojiCategory from './EmojiCategory';
-import { EMOJI_RANGES } from './emojiData';
+import {EMOJI_RANGES} from './emojiData';
 
 /**
  * Main emoji selector component
@@ -47,11 +47,11 @@ export default class EmojiSelector extends React.Component {
   static ranges = EMOJI_RANGES;
 
   render() {
-    const { onSelect } = this.props;
+    const {onSelect} = this.props;
 
     return (
       <div className="emoji-selector">
-        {EMOJI_RANGES.map(({ name, values }) => (
+        {EMOJI_RANGES.map(({name, values}) => (
           <EmojiCategory
             key={name}
             name={name}
