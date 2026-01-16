@@ -28,16 +28,24 @@
  *
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-const initialState = {
-  websocketSession: {},
-};
 
-const UserReducer = () => (state = initialState, action) => {
-  if (action.type === 'WEBSOCKET_SESSION_UPDATED') {
-    return {...state, websocketSession: action.payload};
+/**
+ * Updates an existing item in an array or adds it if not found.
+ * Returns a new array (does not mutate the original).
+ *
+ * @param {Array} array - The array to update
+ * @param {Object} item - The item to update or add
+ * @param {string} idKey - The key to use for identifying items (default: 'id')
+ * @returns {Array} A new array with the item updated or added
+ */
+export const updateOrCreateInArray = (array, item, idKey = 'id') => {
+  const position = array.findIndex((i) => i[idKey] === item[idKey]);
+
+  if (position === -1) {
+    return [...array, item];
   }
 
-  return state;
+  const updatedArray = [...array];
+  updatedArray[position] = item;
+  return updatedArray;
 };
-
-export default UserReducer;

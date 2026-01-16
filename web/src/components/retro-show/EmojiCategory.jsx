@@ -31,35 +31,40 @@
 
 import React from 'react';
 import * as PropTypes from 'prop-types';
-import EmojiCategory from './EmojiCategory';
-import { EMOJI_RANGES } from './emojiData';
+import EmojiButton from './EmojiButton';
+import { fromCodePoints } from './emojiData';
 
 /**
- * Main emoji selector component
- * Displays all emoji categories in a scrollable selector
+ * Emoji category section component
+ * Renders a category header and all emojis within that category
  */
-export default class EmojiSelector extends React.Component {
-  static propTypes = {
-    onSelect: PropTypes.func.isRequired,
-  };
-
-  // Expose ranges for backwards compatibility
-  static ranges = EMOJI_RANGES;
-
-  render() {
-    const { onSelect } = this.props;
-
-    return (
-      <div className="emoji-selector">
-        {EMOJI_RANGES.map(({ name, values }) => (
-          <EmojiCategory
-            key={name}
-            name={name}
-            values={values}
+const EmojiCategory = ({ name, values, onSelect }) => {
+  return (
+    <div className="emoji-selector-group">
+      <h1>{name}</h1>
+      {values.map((points) => {
+        const emoji = fromCodePoints(points);
+        return (
+          <EmojiButton
+            key={emoji}
+            emoji={emoji}
             onSelect={onSelect}
           />
-        ))}
-      </div>
-    );
-  }
-}
+        );
+      })}
+    </div>
+  );
+};
+
+EmojiCategory.propTypes = {
+  name: PropTypes.string.isRequired,
+  values: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.arrayOf(PropTypes.number),
+    ])
+  ).isRequired,
+  onSelect: PropTypes.func.isRequired,
+};
+
+export default EmojiCategory;

@@ -152,20 +152,22 @@ class ShowRetroPage extends React.Component {
     this.moveToNextItem = this.moveToNextItem.bind(this);
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     const {retroId, archiveId, retro_archives, archives} = this.props;
 
     this.fetchRetros(retroId, archives, archiveId);
     this.initializeArchivesState(retro_archives, archives);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const {retroId, archiveId, retro_archives, archives} = nextProps;
+  componentDidUpdate(prevProps) {
+    const {retroId, archiveId, retro_archives, archives} = this.props;
 
-    if (archives !== this.props.archives) {
+    if (archives !== prevProps.archives) {
       this.fetchRetros(retroId, archives, archiveId);
     }
-    this.initializeArchivesState(retro_archives, archives);
+    if (retro_archives !== prevProps.retro_archives || archives !== prevProps.archives) {
+      this.initializeArchivesState(retro_archives, archives);
+    }
   }
 
   // Calculate if mobile

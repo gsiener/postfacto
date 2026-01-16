@@ -93,20 +93,20 @@ class Router extends React.Component {
     this.setState({Page: page, additionalProps});
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const {api_server_not_found, retro_not_found, not_found} = nextProps.not_found;
-    if (api_server_not_found) {
+  componentDidUpdate(prevProps, prevState) {
+    const {api_server_not_found, retro_not_found, not_found} = this.props.not_found;
+    const prevNotFound = prevProps.not_found;
+
+    if (api_server_not_found && !prevNotFound.api_server_not_found) {
       this.setPage(ConnectedApiServerNotFoundPage);
     }
-    if (retro_not_found) {
+    if (retro_not_found && !prevNotFound.retro_not_found) {
       this.setPage(ConnectedRetroNotFoundPage);
     }
-    if (not_found) {
+    if (not_found && !prevNotFound.not_found) {
       this.setPage(ConnectedNotFoundPage);
     }
-  }
 
-  componentDidUpdate(prevProps, prevState) {
     if (this.state.Page !== prevState.Page) {
       this.props.clearAlert();
     }

@@ -50,11 +50,27 @@ export default class ShareRetroDialog extends React.Component {
   }
 
   copyRetroUrl() {
-    const textToCopy = document.querySelector('#share-retro-url');
+    const textToCopy = this.retroUrl;
 
-    textToCopy.select();
-    textToCopy.setSelectionRange(0, 99999); /* For mobile devices */
+    // Use modern Clipboard API if available
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => {
+          this.props.copiedMagicLink(this.props.retroId);
+        })
+        .catch(() => {
+          this.fallbackCopyText();
+        });
+    } else {
+      // Fallback for older browsers or test environments
+      this.fallbackCopyText();
+    }
+  }
 
+  fallbackCopyText() {
+    const inputElement = document.querySelector('#share-retro-url');
+    inputElement.select();
+    inputElement.setSelectionRange(0, 99999); /* For mobile devices */
     document.execCommand('copy');
     this.props.copiedMagicLink(this.props.retroId);
   }

@@ -56,7 +56,7 @@ class RetrosController < ApplicationController
   def update
     @retro.assign_attributes(retro_update_params.fetch(:retro))
 
-    if @retro.save # TODO: no error handling
+    if @retro.save
       broadcast_force_relogin if force_relogin_required?
       broadcast
       render json: {

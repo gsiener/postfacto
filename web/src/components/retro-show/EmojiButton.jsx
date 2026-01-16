@@ -28,16 +28,32 @@
  *
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-const initialState = {
-  websocketSession: {},
+
+import React from 'react';
+import * as PropTypes from 'prop-types';
+
+/**
+ * Individual emoji button component
+ * Renders a single clickable emoji
+ */
+const EmojiButton = ({ emoji, onSelect }) => {
+  const handleMouseDown = (event) => {
+    onSelect(event, emoji);
+  };
+
+  return (
+    <span
+      className="emoji-selector-option"
+      onMouseDown={handleMouseDown}
+    >
+      {emoji}
+    </span>
+  );
 };
 
-const UserReducer = () => (state = initialState, action) => {
-  if (action.type === 'WEBSOCKET_SESSION_UPDATED') {
-    return {...state, websocketSession: action.payload};
-  }
-
-  return state;
+EmojiButton.propTypes = {
+  emoji: PropTypes.string.isRequired,
+  onSelect: PropTypes.func.isRequired,
 };
 
-export default UserReducer;
+export default EmojiButton;

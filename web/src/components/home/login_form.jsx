@@ -31,7 +31,24 @@
 
 import React from 'react';
 import types from 'prop-types';
-import GoogleLogin from 'react-google-login';
+import {GoogleLogin, GoogleOAuthProvider} from '@react-oauth/google';
+
+// Decode JWT token to extract payload (user profile info)
+function decodeJwt(token) {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    return null;
+  }
+}
 
 export default class LoginForm extends React.PureComponent {
   static propTypes = {
@@ -61,28 +78,59 @@ export default class LoginForm extends React.PureComponent {
     });
   };
 
+  handleGoogleSuccess = (credentialResponse) => {
+    const {onSuccess} = this.props;
+    const credential = credentialResponse.credential;
+    const decoded = decodeJwt(credential);
+
+    if (decoded) {
+      // Transform to match the expected format from the old library
+      onSuccess({
+        profileObj: {
+          email: decoded.email,
+          name: decoded.name,
+        },
+        accessToken: credential,
+      });
+    }
+  };
+
+  handleGoogleError = () => {
+    const {onFailure} = this.props;
+    onFailure();
+  };
+
   render() {
-    const {config, onSuccess, onFailure, className} = this.props;
+    const {config} = this.props;
 
     if (!config.google_oauth_client_id && !config.mock_google_auth) {
       return null;
     }
 
+    if (config.mock_google_auth) {
+      return (
+        <div onClickCapture={this.onMockLogin}>
+          <button
+            type="button"
+            className={'button start-retro ' + this.props.className}
+          >
+            <span>
+              <i className="fa fa-google" aria-hidden="true" style={{marginRight: '10px'}}/>
+              Sign in with Google
+            </span>
+          </button>
+        </div>
+      );
+    }
+
     return (
-      <div onClickCapture={config.mock_google_auth ? this.onMockLogin : null}>
+      <GoogleOAuthProvider clientId={config.google_oauth_client_id}>
         <GoogleLogin
-          clientId={config.google_oauth_client_id}
-          onSuccess={onSuccess}
-          onFailure={onFailure}
-          className={'button start-retro ' + className}
-          hostedDomain={config.google_oauth_hosted_domain}
-        >
-          <span>
-            <i className="fa fa-google" aria-hidden="true" style={{marginRight: '10px'}}/>
-            Sign in with Google
-          </span>
-        </GoogleLogin>
-      </div>
+          onSuccess={this.handleGoogleSuccess}
+          onError={this.handleGoogleError}
+          hosted_domain={config.google_oauth_hosted_domain}
+        />
+      </GoogleOAuthProvider>
     );
   }
 }

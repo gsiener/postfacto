@@ -116,13 +116,15 @@ class ShowRetroSettingsPage extends React.Component {
     this.handleRetroSettingsSubmit = this.handleRetroSettingsSubmit.bind(this);
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     this.getSettings(this.props);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const {retro, errors} = nextProps;
-    this.setState(getStateUpdateFor(retro, errors));
+  componentDidUpdate(prevProps) {
+    const {retro, errors} = this.props;
+    if (retro !== prevProps.retro || errors !== prevProps.errors) {
+      this.setState(getStateUpdateFor(retro, errors));
+    }
   }
 
   componentWillUnmount() {

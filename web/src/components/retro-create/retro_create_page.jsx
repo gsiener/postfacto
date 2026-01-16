@@ -76,21 +76,23 @@ class RetroCreatePage extends React.Component {
     this.onChangePassword = this.onChange.bind(this, 'password');
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     if (!localStorage.getItem('authToken')) {
       this.props.redirectToHome();
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.errors) {
-      this.setState({
-        errors: {
-          slug: nextProps.errors.slug,
-        },
-      });
-    } else {
-      this.setState({errors: {}});
+  componentDidUpdate(prevProps) {
+    if (this.props.errors !== prevProps.errors) {
+      if (this.props.errors) {
+        this.setState({
+          errors: {
+            slug: this.props.errors.slug,
+          },
+        });
+      } else {
+        this.setState({errors: {}});
+      }
     }
   }
 

@@ -112,7 +112,7 @@ class Retro < ActiveRecord::Base
   end
 
   def owner_email
-    user.try(:email)
+    user&.email
   end
 
   def token_has_expired?(session_time_limit, current_time)

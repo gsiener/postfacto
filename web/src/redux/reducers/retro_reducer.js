@@ -28,6 +28,8 @@
  *
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import {updateOrCreateInArray} from './array_utils';
+
 const initialState = {
   currentRetro: {
     name: '',
@@ -53,38 +55,29 @@ const initialState = {
 
 const RetroReducer = () => (state = initialState, action) => {
   if (action.type === 'CURRENT_RETRO_UPDATED') {
-    return Object.assign({}, state, {currentRetro: action.payload});
+    return {...state, currentRetro: action.payload};
   }
 
   if (action.type === 'CURRENT_RETRO_SEND_ARCHIVE_EMAIL_UPDATED') {
-    return Object.assign({}, state, {currentRetro: {...state.currentRetro, send_archive_email: action.payload}});
+    return {...state, currentRetro: {...state.currentRetro, send_archive_email: action.payload}};
   }
 
   if (action.type === 'CURRENT_RETRO_HIGHLIGHT_CLEARED') {
-    return Object.assign({}, state, {currentRetro: {...state.currentRetro, highlighted_item_id: null}});
+    return {...state, currentRetro: {...state.currentRetro, highlighted_item_id: null}};
   }
 
   if (action.type === 'CURRENT_RETRO_ITEM_DELETED') {
     const item = action.payload;
     const updatedItems = state.currentRetro.items.filter((i) => i.id !== item.id);
 
-    return Object.assign({}, state, {currentRetro: {...state.currentRetro, items: updatedItems}});
+    return {...state, currentRetro: {...state.currentRetro, items: updatedItems}};
   }
 
   if (action.type === 'CURRENT_RETRO_ITEM_UPDATED') {
     const item = action.payload;
-    const existingItems = state.currentRetro.items;
+    const updatedItems = updateOrCreateInArray(state.currentRetro.items, item);
 
-    const position = existingItems.findIndex((i) => i.id === item.id);
-
-    const updatedItems = [].concat(existingItems);
-    if (position === -1) {
-      updatedItems.push(item);
-    } else {
-      updatedItems[position] = item;
-    }
-
-    return Object.assign({}, state, {currentRetro: {...state.currentRetro, items: updatedItems}});
+    return {...state, currentRetro: {...state.currentRetro, items: updatedItems}};
   }
 
   if (action.type === 'CURRENT_RETRO_ITEM_DONE_UPDATED') {
@@ -92,56 +85,48 @@ const RetroReducer = () => (state = initialState, action) => {
     const existingItems = state.currentRetro.items;
 
     const position = existingItems.findIndex((i) => i.id === itemId);
-    const updatedItems = [].concat(existingItems);
+    const updatedItems = [...existingItems];
     const item = updatedItems[position];
     item.done = done;
 
-    return Object.assign({}, state, {
+    return {
+      ...state,
       currentRetro: {
         ...state.currentRetro,
         highlighted_item_id: null,
         items: updatedItems,
       },
-    });
+    };
   }
 
   if (action.type === 'CURRENT_RETRO_ACTION_ITEM_UPDATED') {
     const actionItem = action.payload;
-    const existingActionItems = state.currentRetro.action_items;
+    const updatedItems = updateOrCreateInArray(state.currentRetro.action_items, actionItem);
 
-    const position = existingActionItems.findIndex((i) => i.id === actionItem.id);
-
-    const updatedItems = [].concat(existingActionItems);
-    if (position === -1) {
-      updatedItems.push(actionItem);
-    } else {
-      updatedItems[position] = actionItem;
-    }
-
-    return Object.assign({}, state, {currentRetro: {...state.currentRetro, action_items: updatedItems}});
+    return {...state, currentRetro: {...state.currentRetro, action_items: updatedItems}};
   }
 
   if (action.type === 'CURRENT_RETRO_ACTION_ITEM_DELETED') {
     const actionItem = action.payload;
     const updatedActionItems = state.currentRetro.action_items.filter((i) => i.id !== actionItem.id);
 
-    return Object.assign({}, state, {currentRetro: {...state.currentRetro, action_items: updatedActionItems}});
+    return {...state, currentRetro: {...state.currentRetro, action_items: updatedActionItems}};
   }
 
   if (action.type === 'RETROS_UPDATED') {
     const retros = action.payload;
 
-    return Object.assign({}, state, {retros});
+    return {...state, retros};
   }
 
   if (action.type === 'CURRENT_ARCHIVED_RETRO_UPDATED') {
-    return Object.assign({}, state, {currentArchivedRetro: action.payload});
+    return {...state, currentArchivedRetro: action.payload};
   }
 
   if (action.type === 'RETRO_ARCHIVES_UPDATED') {
     const retroArchives = action.payload;
 
-    return Object.assign({}, state, {retroArchives});
+    return {...state, retroArchives};
   }
 
   return state;
