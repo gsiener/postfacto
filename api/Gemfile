@@ -56,8 +56,11 @@ group :development, :test do
   gem 'pry'
   gem 'pry-byebug'
   gem 'rspec-rails'
+  gem 'rspec_junit_formatter', require: false
   gem 'rubocop', require: false
   gem 'shoulda-matchers'
+  gem 'simplecov', require: false
+  gem 'simplecov-cobertura', require: false
   gem 'webmock'
   gem 'tzinfo-data'
   gem 'climate_control'

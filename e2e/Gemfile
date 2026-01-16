@@ -30,7 +30,7 @@
 #
 source 'https://rubygems.org'
 
-ruby '2.7.3'
+ruby '3.2.10'
 
 group :development, :test do
   gem 'rspec'

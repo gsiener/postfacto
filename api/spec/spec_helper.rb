@@ -28,6 +28,19 @@
 #
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+if ENV['COVERAGE']
+  require 'simplecov'
+  require 'simplecov-cobertura'
+  SimpleCov.start 'rails' do
+    add_filter '/spec/'
+    add_filter '/config/'
+    formatter SimpleCov::Formatter::MultiFormatter.new([
+      SimpleCov::Formatter::HTMLFormatter,
+      SimpleCov::Formatter::CoberturaFormatter
+    ])
+  end
+end
+
 require 'webmock/rspec'
 
 RSpec.configure do |config|
