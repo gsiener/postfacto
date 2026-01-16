@@ -34,15 +34,17 @@ import types from 'prop-types';
 import {Helmet} from 'react-helmet';
 import {connect} from 'react-redux';
 
-const Header = ({config, retro}) => (
-  <Helmet
-    title={retro.name ? retro.name + ' - ' + config.title : config.title}
-    link={[
-      {'rel': 'icon', 'href': '/images/favicon.png?v=2'},
-      {'type': 'text/plain', 'rel': 'author', 'href': '/humans.txt'},
-    ]}
-  />
-);
+function Header({config, retro}) {
+  return (
+    <Helmet
+      title={retro.name ? retro.name + ' - ' + config.title : config.title}
+      link={[
+        {'rel': 'icon', 'href': '/images/favicon.png?v=2'},
+        {'type': 'text/plain', 'rel': 'author', 'href': '/humans.txt'},
+      ]}
+    />
+  );
+}
 
 Header.propTypes = {
   retro: types.object.isRequired,

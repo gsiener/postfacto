@@ -186,7 +186,8 @@ class ShowRetroSettingsPage extends React.Component {
 
     if (!errors.name && !errors.slug) {
       this.props.updateRetroSettings(
-        retroId, name,
+        retroId,
+        name,
         slug,
         retro.slug,
         isPrivate,

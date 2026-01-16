@@ -45,6 +45,10 @@ module.exports = {
     'react/no-unescaped-entities': ['off'],
     'react/sort-comp': ['off'],
     'react/static-property-placement': ['off'],
+    'default-param-last': ['off'],
+    'react/function-component-definition': ['off'],
+    'function-paren-newline': ['off'],
+    'function-call-argument-newline': ['off'],
   },
 
   'overrides': [{

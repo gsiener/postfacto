@@ -40,9 +40,9 @@ function formatInterval(secondsRemaining) {
   return minutes + ':' + '00'.substr(stringSeconds.length) + stringSeconds;
 }
 
-const FormattedInterval = ({secondsRemaining}) => (
-  <div className="formatted-interval">{formatInterval(secondsRemaining)}</div>
-);
+function FormattedInterval({secondsRemaining}) {
+  return <div className="formatted-interval">{formatInterval(secondsRemaining)}</div>;
+}
 
 FormattedInterval.propTypes = {
   secondsRemaining: PropTypes.number.isRequired,

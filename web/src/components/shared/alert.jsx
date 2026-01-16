@@ -32,7 +32,7 @@
 import React from 'react';
 import types from 'prop-types';
 
-const Alert = ({alert, className}) => {
+function Alert({alert, className}) {
   if (!alert || !alert.message) {
     return null;
   }
@@ -43,7 +43,7 @@ const Alert = ({alert, className}) => {
       <span className="alert__text">{alert.message}</span>
     </div>
   );
-};
+}
 
 Alert.propTypes = {
   alert: types.shape({

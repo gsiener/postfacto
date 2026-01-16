@@ -47,7 +47,7 @@ describe('RetroColumnItem', () => {
   let deleteRetroItem;
   let scrollTo;
 
-  const WiredRetroColumnItem = (props) => {
+  function WiredRetroColumnItem(props) {
     voteRetroItem = jest.fn();
     doneRetroItem = jest.fn();
     undoneRetroItem = jest.fn();
@@ -70,7 +70,7 @@ describe('RetroColumnItem', () => {
         {...props}
       />
     );
-  };
+  }
 
   const retroId = 'retro-slug-123';
   const item = {

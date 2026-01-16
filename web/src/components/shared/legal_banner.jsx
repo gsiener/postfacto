@@ -32,17 +32,19 @@
 import React from 'react';
 import types from 'prop-types';
 
-const LegalBanner = ({config: {terms, privacy}, onDismiss}) => (
-  <div className="banner" style={{display: 'flex'}}>
-    <div className="terms-text">
-      By accessing and using Postfacto, you agree to our
-      {' '}<a href={terms} target="_blank" rel="noopener noreferrer">Terms of Use</a> and
-      {' '}<a href={privacy} target="_blank" rel="noopener noreferrer">Privacy Policy</a> and
-      use of cookies
+function LegalBanner({config: {terms, privacy}, onDismiss}) {
+  return (
+    <div className="banner" style={{display: 'flex'}}>
+      <div className="terms-text">
+        By accessing and using Postfacto, you agree to our
+        {' '}<a href={terms} target="_blank" rel="noopener noreferrer">Terms of Use</a> and
+        {' '}<a href={privacy} target="_blank" rel="noopener noreferrer">Privacy Policy</a> and
+        use of cookies
+      </div>
+      <button className="button ok-button" type="button" onClick={onDismiss}>OK</button>
     </div>
-    <button className="button ok-button" type="button" onClick={onDismiss}>OK</button>
-  </div>
-);
+  );
+}
 
 LegalBanner.propTypes = {
   config: types.shape({
