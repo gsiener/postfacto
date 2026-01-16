@@ -33,6 +33,7 @@ require 'security/auth_token'
 
 class OauthSessionsController < ApplicationController
   include UsersAuth
+  skip_forgery_protection
 
   def create
     google_user = GOOGLE_CLIENT.get_user!(params.fetch(:access_token))

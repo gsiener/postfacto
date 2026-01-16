@@ -28,13 +28,20 @@
 #
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-require 'clients/google_client'
-require 'clients/mock_google_client'
 
-if ENV['USE_MOCK_GOOGLE'] == 'true'
-  GOOGLE_CLIENT = MockGoogleClient.new
-else
-  auth_endpoint = ENV['GOOGLE_AUTH_ENDPOINT'] ||= 'https://www.googleapis.com/oauth2/v3/userinfo'
-  hosted_domain = ENV.fetch('HOSTED_DOMAIN', nil)
-  GOOGLE_CLIENT = GoogleClient.new(auth_endpoint, hosted_domain)
+class MockGoogleClient
+  MOCK_TOKEN_PREFIX = 'expected-valid-access-token_'.freeze
+
+  def get_user!(access_token)
+    unless access_token.start_with?(MOCK_TOKEN_PREFIX)
+      raise GoogleClient::GetUserFailed.new
+    end
+
+    email = "test@example.com"
+    {
+      name: 'Test User',
+      email: email,
+      hd: 'example.com'
+    }
+  end
 end
