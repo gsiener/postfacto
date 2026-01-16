@@ -6,9 +6,41 @@ on:
   pull_request:
     branches: [master]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  api-tests:
-    name: API Tests (Ruby/Rails)
+  web:
+    name: Web (Lint + Tests)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.20.5'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci --legacy-peer-deps
+
+      - name: Lint
+        working-directory: web
+        run: npm run lint
+
+      - name: Test
+        working-directory: web
+        run: npm test
+        env:
+          CI: true
+
+  api:
+    name: API Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -23,59 +55,12 @@ jobs:
 
       - name: Set up database
         working-directory: api
-        run: |
-          bundle exec rake db:create db:migrate
+        run: bundle exec rake db:create db:migrate
         env:
           RAILS_ENV: test
 
-      - name: Run RSpec tests
+      - name: Run tests
         working-directory: api
-        run: bundle exec rspec
+        run: bundle exec rspec --format progress --profile 10
         env:
           RAILS_ENV: test
-
-  web-tests:
-    name: Web Tests (React/Jest)
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18.20.5'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
-
-      - name: Install dependencies
-        working-directory: web
-        run: npm ci --legacy-peer-deps
-
-      - name: Run Jest tests
-        working-directory: web
-        run: npm test
-        env:
-          CI: true
-
-  lint:
-    name: Lint (ESLint)
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18.20.5'
-          cache: 'npm'
-          cache-dependency-path: web/package-lock.json
-
-      - name: Install dependencies
-        working-directory: web
-        run: npm ci --legacy-peer-deps
-
-      - name: Run ESLint
-        working-directory: web
-        run: npm run lint
