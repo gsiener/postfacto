@@ -1,0 +1,19 @@
+<%# locals: (retro:, action_items:) %>
+<div class="flex flex-col md:flex-row md:items-start md:space-x-6">
+  <%# New Action Item Form %>
+  <div id="new-action-item-form" class="mb-4 md:mb-0 md:w-80">
+    <%= form_with model: ActionItem.new, url: retro_action_items_path(retro), class: 'flex space-x-2', data: { turbo_stream: true } do |f| %>
+      <%= f.text_field :description,
+          placeholder: "Add an action...",
+          class: 'flex-1 block w-full rounded border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm py-2 px-3',
+          autocomplete: 'off' %>
+      <%= f.submit 'Add',
+          class: 'px-4 py-2 text-sm font-medium rounded text-white bg-purple-500 hover:bg-purple-600 shadow-sm transition-colors' %>
+    <% end %>
+  </div>
+
+  <%# Action Items List - Horizontal layout %>
+  <div id="action-items" class="flex-1 flex flex-wrap gap-2">
+    <%= render partial: 'hotwire/action_items/action_item', collection: action_items, as: :action_item, locals: { retro: retro } %>
+  </div>
+</div>

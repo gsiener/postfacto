@@ -1,29 +1,22 @@
 <% content_for(:title) { @retro.name } %>
 
-<div class="min-h-screen flex flex-col bg-gray-100" data-controller="hotkeys" data-hotkeys-retro-id-value="<%= @retro.slug %>">
+<div class="min-h-screen flex flex-col" data-controller="hotkeys" data-hotkeys-retro-id-value="<%= @retro.slug %>">
   <%# Header - Teal like original Postfacto %>
-  <header class="bg-teal-600 shadow-md">
-    <div class="max-w-full mx-auto px-4 py-3 sm:px-6 lg:px-8">
+  <header class="bg-teal-500">
+    <div class="max-w-full mx-auto px-4 py-3">
       <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4">
-          <h1 class="text-xl font-semibold text-white"><%= @retro.name %></h1>
-          <% if @retro.is_private? %>
-            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-700 text-teal-100">
-              🔒 Private
-            </span>
-          <% end %>
-        </div>
+        <h1 class="text-xl font-medium text-white"><%= @retro.name %></h1>
         <div class="flex items-center space-x-2">
           <% if @retro.video_link.present? %>
-            <%= link_to @retro.video_link, target: '_blank', class: 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded text-teal-100 hover:bg-teal-700 transition-colors' do %>
+            <%= link_to @retro.video_link, target: '_blank', class: 'px-3 py-1.5 text-sm text-white hover:bg-teal-600 rounded transition-colors' do %>
               📹 Video
             <% end %>
           <% end %>
-          <%= link_to edit_retro_path(@retro), class: 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded text-teal-100 hover:bg-teal-700 transition-colors' do %>
-            ⚙️ Settings
+          <%= link_to edit_retro_path(@retro), class: 'px-3 py-1.5 text-sm text-white hover:bg-teal-600 rounded transition-colors' do %>
+            ⚙️
           <% end %>
-          <%= button_to archive_retro_path(@retro), method: :post, data: { turbo_confirm: 'Archive this retro? All items will be moved to the archive.' }, class: 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded bg-teal-700 text-white hover:bg-teal-800 transition-colors' do %>
-            📦 Archive
+          <%= button_to archive_retro_path(@retro), method: :post, data: { turbo_confirm: 'Archive this retro? All items will be moved to the archive.' }, class: 'px-3 py-1.5 text-sm text-white hover:bg-teal-600 rounded transition-colors' do %>
+            📦
           <% end %>
         </div>
       </div>
@@ -33,52 +26,74 @@
   <%# Highlighted Item Discussion Panel %>
   <div id="highlighted-item">
     <% if @highlighted_item %>
-      <div class="bg-amber-50 border-b-4 border-amber-400 px-4 py-6 shadow-inner">
-        <div class="max-w-4xl mx-auto">
-          <div class="flex items-start justify-between">
-            <div class="flex-1">
-              <div class="flex items-center space-x-2">
-                <span class="text-2xl"><%= category_emoji(@highlighted_item.category) %></span>
-                <span class="text-sm font-semibold text-amber-700 uppercase tracking-wide">Currently Discussing</span>
-              </div>
-              <p class="mt-3 text-xl text-gray-900"><%= @highlighted_item.description %></p>
-              <p class="mt-2 text-sm text-gray-500"><%= @highlighted_item.vote_count %> votes</p>
+      <div class="bg-amber-100 border-b-2 border-amber-300 px-4 py-4">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <span class="text-3xl"><%= category_emoji(@highlighted_item.category) %></span>
+            <div>
+              <p class="text-lg text-gray-900"><%= @highlighted_item.description %></p>
+              <p class="text-sm text-gray-500"><%= @highlighted_item.vote_count %> votes</p>
             </div>
-            <div class="ml-6 flex items-center space-x-2">
-              <%= button_to done_retro_item_path(@retro, @highlighted_item), method: :patch, class: 'inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-600 shadow transition-colors' do %>
-                ✓ Done
-              <% end %>
-              <%= button_to unhighlight_retro_item_path(@retro, @highlighted_item), method: :delete, class: 'inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-100 shadow transition-colors' do %>
-                Cancel
-              <% end %>
-            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <%= button_to done_retro_item_path(@retro, @highlighted_item), method: :patch, class: 'px-4 py-2 text-sm font-medium rounded bg-green-500 text-white hover:bg-green-600 transition-colors' do %>
+              ✓ Done
+            <% end %>
+            <%= button_to unhighlight_retro_item_path(@retro, @highlighted_item), method: :delete, class: 'px-4 py-2 text-sm font-medium rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors' do %>
+              Cancel
+            <% end %>
           </div>
         </div>
       </div>
     <% end %>
   </div>
 
-  <%# Responsive Grid Layout - Single set of columns %>
-  <div class="flex-1 overflow-hidden">
-    <div class="h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-      <%# Happy Column %>
-      <div class="overflow-y-auto p-4 bg-green-50 border-b md:border-b-0 md:border-r border-green-200">
-        <%= render 'hotwire/retros/column', retro: @retro, category: 'happy', items: @items_by_category[:happy] %>
+  <%# Main Content Area %>
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <%# Three Columns - Happy, Meh, Sad %>
+    <div class="flex-1 grid grid-cols-1 md:grid-cols-3 overflow-hidden">
+      <%# Happy Column - Green %>
+      <div class="flex flex-col overflow-hidden">
+        <div class="bg-green-400 px-4 py-3 flex items-center justify-center">
+          <span class="text-2xl mr-2">😊</span>
+          <span class="text-white font-medium">Happy</span>
+        </div>
+        <div class="flex-1 overflow-y-auto bg-white p-3" id="happy-column-content">
+          <%= render 'hotwire/retros/column_content', retro: @retro, category: 'happy', items: @items_by_category[:happy] %>
+        </div>
       </div>
 
-      <%# Meh Column %>
-      <div class="overflow-y-auto p-4 bg-yellow-50 border-b md:border-b-0 md:border-r border-yellow-200">
-        <%= render 'hotwire/retros/column', retro: @retro, category: 'meh', items: @items_by_category[:meh] %>
+      <%# Meh Column - Yellow/Orange %>
+      <div class="flex flex-col overflow-hidden border-l border-r border-gray-200">
+        <div class="bg-yellow-400 px-4 py-3 flex items-center justify-center">
+          <span class="text-2xl mr-2">😐</span>
+          <span class="text-white font-medium">Meh</span>
+        </div>
+        <div class="flex-1 overflow-y-auto bg-white p-3" id="meh-column-content">
+          <%= render 'hotwire/retros/column_content', retro: @retro, category: 'meh', items: @items_by_category[:meh] %>
+        </div>
       </div>
 
-      <%# Sad Column %>
-      <div class="overflow-y-auto p-4 bg-red-50 border-b lg:border-b-0 lg:border-r border-red-200">
-        <%= render 'hotwire/retros/column', retro: @retro, category: 'sad', items: @items_by_category[:sad] %>
+      <%# Sad Column - Red %>
+      <div class="flex flex-col overflow-hidden">
+        <div class="bg-red-400 px-4 py-3 flex items-center justify-center">
+          <span class="text-2xl mr-2">😢</span>
+          <span class="text-white font-medium">Sad</span>
+        </div>
+        <div class="flex-1 overflow-y-auto bg-white p-3" id="sad-column-content">
+          <%= render 'hotwire/retros/column_content', retro: @retro, category: 'sad', items: @items_by_category[:sad] %>
+        </div>
       </div>
+    </div>
 
-      <%# Action Items Column %>
-      <div class="overflow-y-auto p-4 bg-purple-50">
-        <%= render 'hotwire/retros/action_panel', retro: @retro, action_items: @action_items %>
+    <%# Action Items - Below the columns %>
+    <div class="border-t-2 border-gray-200 bg-gray-50">
+      <div class="bg-purple-400 px-4 py-2 flex items-center">
+        <span class="text-xl mr-2">📋</span>
+        <span class="text-white font-medium">Action Items</span>
+      </div>
+      <div class="p-4 max-h-64 overflow-y-auto">
+        <%= render 'hotwire/retros/action_panel_content', retro: @retro, action_items: @action_items %>
       </div>
     </div>
   </div>

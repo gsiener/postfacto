@@ -1,51 +1,30 @@
 <%# locals: (action_item:, retro:) %>
 <%= turbo_frame_tag dom_id(action_item) do %>
-  <div class="bg-white rounded-lg shadow-sm border-l-4 border-l-purple-500 p-3 <%= 'opacity-60' if action_item.done? %>"
+  <div class="inline-flex items-center bg-white rounded shadow-sm px-3 py-2 <%= 'opacity-50' if action_item.done? %>"
        data-controller="item"
        id="action-item-card-<%= action_item.id %>">
 
-    <div class="flex items-start space-x-3">
-      <%# Checkbox %>
-      <%= button_to toggle_done_retro_action_item_path(retro, action_item),
-          method: :patch,
-          class: 'flex-shrink-0 mt-0.5' do %>
-        <div class="w-5 h-5 rounded border-2 <%= action_item.done? ? 'bg-purple-500 border-purple-500' : 'border-gray-300 hover:border-purple-400' %> flex items-center justify-center transition-colors">
-          <% if action_item.done? %>
-            <span class="text-white text-xs">✓</span>
-          <% end %>
-        </div>
-      <% end %>
-
-      <%# Display Mode %>
-      <div data-item-target="display" class="flex-1 min-w-0">
-        <p class="text-sm text-gray-800 <%= 'line-through text-gray-400' if action_item.done? %>">
-          <%= action_item.description %>
-        </p>
-      </div>
-
-      <%# Edit Mode %>
-      <div data-item-target="form" class="hidden flex-1 min-w-0">
-        <%= form_with model: action_item, url: retro_action_item_path(retro, action_item), method: :patch, data: { action: 'keydown->item#keydown' } do |f| %>
-          <div class="flex space-x-2">
-            <%= f.text_field :description,
-                value: action_item.description,
-                data: { item_target: 'input' },
-                class: 'flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm' %>
-            <button type="button"
-                    class="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded"
-                    data-action="click->item#cancel">
-              Cancel
-            </button>
-            <%= f.submit 'Save',
-                class: 'px-2 py-1 text-xs text-white bg-purple-500 hover:bg-purple-600 rounded' %>
-          </div>
+    <%# Checkbox %>
+    <%= button_to toggle_done_retro_action_item_path(retro, action_item),
+        method: :patch,
+        class: 'flex-shrink-0 mr-2' do %>
+      <div class="w-4 h-4 rounded border-2 <%= action_item.done? ? 'bg-purple-500 border-purple-500' : 'border-gray-300 hover:border-purple-400' %> flex items-center justify-center transition-colors">
+        <% if action_item.done? %>
+          <span class="text-white text-xs">✓</span>
         <% end %>
       </div>
+    <% end %>
 
-      <%# Action Buttons %>
-      <div data-item-target="display" class="flex-shrink-0 flex items-center space-x-1">
+    <%# Display Mode %>
+    <div data-item-target="display" class="flex items-center">
+      <span class="text-sm text-gray-800 <%= 'line-through text-gray-400' if action_item.done? %> mr-2">
+        <%= action_item.description %>
+      </span>
+
+      <%# Action buttons %>
+      <div class="flex items-center space-x-1">
         <button type="button"
-                class="p-1 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded transition-colors"
+                class="p-1 text-gray-400 hover:text-blue-500 transition-colors text-xs"
                 data-action="click->item#edit"
                 title="Edit">
           ✏️
@@ -54,11 +33,30 @@
         <%= button_to retro_action_item_path(retro, action_item),
             method: :delete,
             data: { turbo_confirm: 'Delete this action item?' },
-            class: 'p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors',
+            class: 'p-1 text-gray-400 hover:text-red-500 transition-colors text-xs',
             title: 'Delete' do %>
           🗑️
         <% end %>
       </div>
+    </div>
+
+    <%# Edit Mode %>
+    <div data-item-target="form" class="hidden">
+      <%= form_with model: action_item, url: retro_action_item_path(retro, action_item), method: :patch, data: { action: 'keydown->item#keydown' } do |f| %>
+        <div class="flex space-x-2">
+          <%= f.text_field :description,
+              value: action_item.description,
+              data: { item_target: 'input' },
+              class: 'block w-full rounded border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm' %>
+          <button type="button"
+                  class="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded"
+                  data-action="click->item#cancel">
+            ✕
+          </button>
+          <%= f.submit '✓',
+              class: 'px-2 py-1 text-xs text-white bg-purple-500 hover:bg-purple-600 rounded' %>
+        </div>
+      <% end %>
     </div>
   </div>
 <% end %>
