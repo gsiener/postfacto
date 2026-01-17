@@ -31,8 +31,8 @@
   </header>
 
   <%# Highlighted Item Discussion Panel %>
-  <% if @highlighted_item %>
-    <%= turbo_frame_tag "highlighted-item" do %>
+  <div id="highlighted-item">
+    <% if @highlighted_item %>
       <div class="bg-amber-50 border-b-4 border-amber-400 px-4 py-6 shadow-inner">
         <div class="max-w-4xl mx-auto">
           <div class="flex items-start justify-between">
@@ -56,55 +56,30 @@
         </div>
       </div>
     <% end %>
-  <% else %>
-    <%= turbo_frame_tag "highlighted-item" %>
-  <% end %>
-
-  <%# Mobile Tabs %>
-  <div class="sm:hidden bg-white border-b" data-controller="tabs" data-tabs-active-tab-value="happy">
-    <nav class="flex">
-      <button type="button" data-tabs-target="tab" data-tabs-tab="happy" data-action="click->tabs#switch" class="flex-1 py-3 text-center text-sm font-medium border-b-2 border-transparent hover:border-green-300 focus:outline-none">
-        😊
-      </button>
-      <button type="button" data-tabs-target="tab" data-tabs-tab="meh" data-action="click->tabs#switch" class="flex-1 py-3 text-center text-sm font-medium border-b-2 border-transparent hover:border-yellow-300 focus:outline-none">
-        😐
-      </button>
-      <button type="button" data-tabs-target="tab" data-tabs-tab="sad" data-action="click->tabs#switch" class="flex-1 py-3 text-center text-sm font-medium border-b-2 border-transparent hover:border-red-300 focus:outline-none">
-        😢
-      </button>
-      <button type="button" data-tabs-target="tab" data-tabs-tab="action" data-action="click->tabs#switch" class="flex-1 py-3 text-center text-sm font-medium border-b-2 border-transparent hover:border-purple-300 focus:outline-none">
-        📋
-      </button>
-    </nav>
-
-    <%# Mobile Content Panels %>
-    <div data-tabs-target="panel" data-tabs-panel="happy" class="p-4 bg-green-50">
-      <%= render 'hotwire/retros/column', retro: @retro, category: 'happy', items: @items_by_category[:happy] %>
-    </div>
-    <div data-tabs-target="panel" data-tabs-panel="meh" class="hidden p-4 bg-yellow-50">
-      <%= render 'hotwire/retros/column', retro: @retro, category: 'meh', items: @items_by_category[:meh] %>
-    </div>
-    <div data-tabs-target="panel" data-tabs-panel="sad" class="hidden p-4 bg-red-50">
-      <%= render 'hotwire/retros/column', retro: @retro, category: 'sad', items: @items_by_category[:sad] %>
-    </div>
-    <div data-tabs-target="panel" data-tabs-panel="action" class="hidden p-4 bg-purple-50">
-      <%= render 'hotwire/retros/action_panel', retro: @retro, action_items: @action_items %>
-    </div>
   </div>
 
-  <%# Desktop Layout - 4 columns like original %>
-  <div class="hidden sm:flex flex-1 overflow-hidden">
-    <div class="flex-1 overflow-y-auto p-4 bg-green-50">
-      <%= render 'hotwire/retros/column', retro: @retro, category: 'happy', items: @items_by_category[:happy] %>
-    </div>
-    <div class="flex-1 overflow-y-auto p-4 bg-yellow-50">
-      <%= render 'hotwire/retros/column', retro: @retro, category: 'meh', items: @items_by_category[:meh] %>
-    </div>
-    <div class="flex-1 overflow-y-auto p-4 bg-red-50">
-      <%= render 'hotwire/retros/column', retro: @retro, category: 'sad', items: @items_by_category[:sad] %>
-    </div>
-    <div class="w-80 overflow-y-auto p-4 bg-purple-50 border-l border-purple-200">
-      <%= render 'hotwire/retros/action_panel', retro: @retro, action_items: @action_items %>
+  <%# Responsive Grid Layout - Single set of columns %>
+  <div class="flex-1 overflow-hidden">
+    <div class="h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <%# Happy Column %>
+      <div class="overflow-y-auto p-4 bg-green-50 border-b md:border-b-0 md:border-r border-green-200">
+        <%= render 'hotwire/retros/column', retro: @retro, category: 'happy', items: @items_by_category[:happy] %>
+      </div>
+
+      <%# Meh Column %>
+      <div class="overflow-y-auto p-4 bg-yellow-50 border-b md:border-b-0 md:border-r border-yellow-200">
+        <%= render 'hotwire/retros/column', retro: @retro, category: 'meh', items: @items_by_category[:meh] %>
+      </div>
+
+      <%# Sad Column %>
+      <div class="overflow-y-auto p-4 bg-red-50 border-b lg:border-b-0 lg:border-r border-red-200">
+        <%= render 'hotwire/retros/column', retro: @retro, category: 'sad', items: @items_by_category[:sad] %>
+      </div>
+
+      <%# Action Items Column %>
+      <div class="overflow-y-auto p-4 bg-purple-50">
+        <%= render 'hotwire/retros/action_panel', retro: @retro, action_items: @action_items %>
+      </div>
     </div>
   </div>
 </div>
