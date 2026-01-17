@@ -134,6 +134,9 @@ module SpecHelpers
 
     find('.top-start-retro').click()
 
+    # Wait for registration page to load before filling in form
+    expect(page).to have_content("create an account for you")
+
     fill_in 'Full Name', with: 'my edited full name'
     fill_in 'Company Name', with: 'my company name'
 

@@ -115,6 +115,17 @@ pushd "$BASE_DIR/api" >/dev/null
 
   echo 'Waiting for API...'
   ( tail -f -n10 "$API_LOG" & ) | grep -q 'Listening' || true
+
+  # Warmup request to ensure server is fully ready
+  echo 'Warming up API...'
+  for i in 1 2 3 4 5; do
+    if curl -s -o /dev/null -w '%{http_code}' http://localhost:4000/api/config 2>/dev/null | grep -q '200'; then
+      echo 'API is ready!'
+      break
+    fi
+    echo "Warmup attempt $i..."
+    sleep 1
+  done
 popd >/dev/null
 
 # Run tests

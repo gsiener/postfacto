@@ -37,7 +37,11 @@ class MockGoogleClient
       raise GoogleClient::GetUserFailed.new
     end
 
-    email = "test@example.com"
+    # Extract email suffix from token to match frontend mock behavior
+    # Token format: "expected-valid-access-token_<email-prefix>"
+    # Returns email as "<email-prefix>@example.com"
+    email_prefix = access_token.sub(MOCK_TOKEN_PREFIX, '')
+    email = "#{email_prefix}@example.com"
     {
       name: 'Test User',
       email: email,

@@ -95,7 +95,7 @@ export default class RegistrationPage extends React.Component {
             </div>
 
             <div className="row">
-              <label className="label">Full Name</label>
+              <label className="label" htmlFor="fullName">Full Name</label>
               <input
                 value={fullName}
                 onChange={this.handleNameChange}
@@ -108,7 +108,7 @@ export default class RegistrationPage extends React.Component {
             </div>
 
             <div className="row">
-              <label className="label">Company Name</label>
+              <label className="label" htmlFor="companyName">Company Name</label>
               <input
                 value={companyName}
                 onChange={this.handleCompanyNameChange}
