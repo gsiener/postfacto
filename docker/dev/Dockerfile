@@ -12,15 +12,15 @@ RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && echo 'export PATH="
 RUN git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 ENV PATH $PATH:/root/.rbenv/bin:/root/.rbenv/shims
 RUN cd /root/.rbenv/plugins/ruby-build && git pull && cd -
-ENV RUBY_VERSION 2.7.3
+ENV RUBY_VERSION 4.0.1
 RUN rbenv install $RUBY_VERSION && rbenv global $RUBY_VERSION && rbenv rehash
 RUN echo 'gem: --no-rdoc --no-ri' >> /.gemrc
-RUN gem install bundler:2.2.16
+RUN gem install bundler
 
 # Install Node
 ENV NVM_DIR /usr/local/nvm
 RUN mkdir -p $NVM_DIR
-ENV NODE_VERSION 14.16.1
+ENV NODE_VERSION 18.20.5
 RUN curl --silent -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 RUN source $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \

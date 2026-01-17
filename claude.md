@@ -12,7 +12,7 @@ Postfacto is a free, open-source, self-hosted retrospective collaboration tool d
 |-----------|-----------|---------|
 | **Backend** | Ruby on Rails | 8.x (originally 6.1) |
 | **Frontend** | React + Redux | 17.0.2 |
-| **Language** | Ruby | 3.2.10 |
+| **Language** | Ruby | 4.0.1 |
 | **Node.js** | Node | 18.20.5 |
 | **Database** | SQLite (dev), PostgreSQL/MySQL (prod) | - |
 | **Test Framework (API)** | RSpec | 8.x |

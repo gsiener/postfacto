@@ -28,16 +28,16 @@
 #
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-FROM node:14.16.1 as front-end
+FROM node:18.20.5 as front-end
 
 COPY ./web /web
 WORKDIR /web
 
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 RUN npm run build
 
-FROM ruby:2.7.3-alpine
-RUN gem install bundler:2.2.16
+FROM ruby:4.0.1-alpine
+RUN gem install bundler
 
 COPY ./api /postfacto
 COPY docker/release/entrypoint /
