@@ -11,7 +11,7 @@
 
   <%# New Item Form %>
   <div id="new-<%= category %>-item-form" class="mb-4">
-    <%= form_with model: Item.new, url: retro_items_path(retro), class: 'flex space-x-2' do |f| %>
+    <%= form_with model: Item.new, url: retro_items_path(retro), class: 'flex space-x-2', data: { turbo_stream: true } do |f| %>
       <%= f.hidden_field :category, value: category %>
       <%= f.text_field :description,
           placeholder: "Add a #{category} item...",
