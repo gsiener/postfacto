@@ -100,8 +100,9 @@ register_spawned $!
 # Create static content
 
 echo 'Building frontend in E2E test mode...'
+echo "REACT_APP_USE_MOCK_GOOGLE=$REACT_APP_USE_MOCK_GOOGLE"
 rm -rf "$BASE_DIR/api/client/*"
-npm --prefix="$BASE_DIR/web" run build
+REACT_APP_USE_MOCK_GOOGLE=true npm --prefix="$BASE_DIR/web" run build
 cp -a "$BASE_DIR/web/build/." "$BASE_DIR/api/client"
 
 # Launch API
