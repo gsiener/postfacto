@@ -5,15 +5,17 @@
 
 <%# Clear the form %>
 <%= turbo_stream.replace "new-#{@item.category}-item-form" do %>
-  <%= form_with model: Item.new, url: retro_items_path(@retro), class: 'mb-4' do |f| %>
-    <%= f.hidden_field :category, value: @item.category %>
-    <div class="flex space-x-2">
-      <%= f.text_area :description,
-          placeholder: "Add a #{@item.category} item...",
-          rows: 2,
-          class: 'flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm resize-none' %>
-      <%= f.submit 'Add',
-          class: 'inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' %>
-    </div>
-  <% end %>
+  <div id="new-<%= @item.category %>-item-form">
+    <%= form_with model: Item.new, url: retro_items_path(@retro), class: 'mb-4' do |f| %>
+      <%= f.hidden_field :category, value: @item.category %>
+      <div class="flex space-x-2">
+        <%= f.text_area :description,
+            placeholder: "Add a #{@item.category} item...",
+            rows: 2,
+            class: 'flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm resize-none' %>
+        <%= f.submit 'Add',
+            class: 'inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' %>
+      </div>
+    <% end %>
+  </div>
 <% end %>

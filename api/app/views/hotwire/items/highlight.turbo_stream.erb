@@ -7,7 +7,7 @@
           <span class="text-sm font-medium text-blue-600 uppercase tracking-wide">Discussing</span>
           <p class="mt-2 text-xl font-medium text-gray-900"><%= @item.description %></p>
           <div class="mt-4 flex items-center space-x-4">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= category_color(@item.category) %>-100 text-<%= category_color(@item.category) %>-800">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= category_badge_class(@item.category) %>">
               <%= @item.category.capitalize %>
             </span>
             <span class="text-sm text-gray-500"><%= @item.vote_count %> votes</span>

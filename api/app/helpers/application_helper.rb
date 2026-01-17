@@ -29,17 +29,45 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 module ApplicationHelper
-  # Returns Tailwind color name for retro item categories
-  def category_color(category)
+  # Returns Tailwind background color class for retro item categories
+  def category_bg_class(category)
     case category.to_s
     when 'happy'
-      'green'
+      'bg-green-500'
     when 'meh'
-      'yellow'
+      'bg-yellow-500'
     when 'sad'
-      'red'
+      'bg-red-500'
     else
-      'gray'
+      'bg-gray-500'
+    end
+  end
+
+  # Returns Tailwind border color class for retro item categories
+  def category_border_class(category)
+    case category.to_s
+    when 'happy'
+      'border-l-green-500'
+    when 'meh'
+      'border-l-yellow-500'
+    when 'sad'
+      'border-l-red-500'
+    else
+      'border-l-gray-500'
+    end
+  end
+
+  # Returns Tailwind badge classes for retro item categories
+  def category_badge_class(category)
+    case category.to_s
+    when 'happy'
+      'bg-green-100 text-green-800'
+    when 'meh'
+      'bg-yellow-100 text-yellow-800'
+    when 'sad'
+      'bg-red-100 text-red-800'
+    else
+      'bg-gray-100 text-gray-800'
     end
   end
 end

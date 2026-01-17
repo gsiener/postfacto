@@ -3,14 +3,14 @@
   <%# Column Header %>
   <div class="flex items-center justify-between mb-4">
     <h2 class="text-lg font-semibold text-gray-900 flex items-center">
-      <span class="w-3 h-3 rounded-full bg-<%= category_color(category) %>-500 mr-2"></span>
+      <span class="w-3 h-3 rounded-full <%= category_bg_class(category) %> mr-2"></span>
       <%= category.capitalize %>
       <span class="ml-2 text-sm font-normal text-gray-500">(<%= items.count %>)</span>
     </h2>
   </div>
 
   <%# New Item Form %>
-  <%= turbo_frame_tag "new-#{category}-item-form" do %>
+  <div id="new-<%= category %>-item-form">
     <%= form_with model: Item.new, url: retro_items_path(retro), class: 'mb-4' do |f| %>
       <%= f.hidden_field :category, value: category %>
       <div class="flex space-x-2">
@@ -22,7 +22,7 @@
             class: 'inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' %>
       </div>
     <% end %>
-  <% end %>
+  </div>
 
   <%# Items List %>
   <div id="<%= category %>-items" class="space-y-3">

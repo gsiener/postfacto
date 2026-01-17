@@ -12,7 +12,7 @@
   </div>
 
   <%# New Action Item Form %>
-  <%= turbo_frame_tag "new-action-item-form" do %>
+  <div id="new-action-item-form">
     <%= form_with model: ActionItem.new, url: retro_action_items_path(retro), class: 'mb-4' do |f| %>
       <div class="flex space-x-2">
         <%= f.text_field :description,
@@ -22,7 +22,7 @@
             class: 'inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500' %>
       </div>
     <% end %>
-  <% end %>
+  </div>
 
   <%# Action Items List %>
   <div id="action-items" class="space-y-2">
