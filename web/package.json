@@ -33,8 +33,8 @@
     "serve": "^14.2.5"
   },
   "scripts": {
-    "start": "REACT_APP_USE_MOCK_GOOGLE=\"$USE_MOCK_GOOGLE\" REACT_APP_GOOGLE_OAUTH_CLIENT_ID=\"$GOOGLE_OAUTH_CLIENT_ID\" react-scripts start",
-    "build": "REACT_APP_USE_MOCK_GOOGLE=\"$USE_MOCK_GOOGLE\" REACT_APP_GOOGLE_OAUTH_CLIENT_ID=\"$GOOGLE_OAUTH_CLIENT_ID\" react-scripts build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "lint": "eslint --ext=js --ext=jsx src",
     "serve-built": "serve -s -n -l 3000 build",
     "test": "react-scripts test",

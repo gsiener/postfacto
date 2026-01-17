@@ -62,7 +62,9 @@ pushd "$BASE_DIR/api" >/dev/null
 popd >/dev/null
 
 export USE_MOCK_GOOGLE
+export REACT_APP_USE_MOCK_GOOGLE="$USE_MOCK_GOOGLE"
 export GOOGLE_OAUTH_CLIENT_ID
+export REACT_APP_GOOGLE_OAUTH_CLIENT_ID="$GOOGLE_OAUTH_CLIENT_ID"
 
 # Launch content server for frontend
 
