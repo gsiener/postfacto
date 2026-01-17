@@ -28,40 +28,33 @@
 #
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-FROM node:18.20.5 as front-end
-
-COPY ./web /web
-WORKDIR /web
-
-RUN npm ci --legacy-peer-deps
-RUN npm run build
-
 FROM ruby:4.0.1-alpine
+
 RUN gem install bundler
 
 COPY ./api /postfacto
 COPY docker/release/entrypoint /
 COPY docker/release/create-admin-user /usr/local/bin
-COPY --from=front-end /web/build /postfacto/client/
 
 WORKDIR /postfacto
 
-# Nokogiri dependencies
+# Build dependencies
 RUN apk add --update \
   build-base \
   libxml2-dev \
-  libxslt-dev
-
-RUN apk add --update \
+  libxslt-dev \
   mariadb-dev \
   postgresql-dev \
-  sqlite-dev
-
-RUN apk add --update nodejs
+  sqlite-dev \
+  nodejs \
+  npm \
+  vips-dev
 
 RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle install --without test
 
+# Build Tailwind CSS and precompile assets
+RUN bundle exec rails tailwindcss:build
 RUN bundle exec rake assets:precompile
 
 ENV RAILS_ENV production

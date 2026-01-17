@@ -40,15 +40,12 @@ gem 'bcrypt'
 gem 'devise'
 gem 'friendly_id'
 gem 'inherited_resources'
-gem 'jbuilder'
 gem 'premailer-rails'
 gem 'puma'
-gem 'rack-cors', require: 'rack/cors'
 gem 'rack-ssl'
 gem 'rest-client'
 gem 'sassc-rails'
 gem 'uglifier'
-gem 'jwt'
 
 # Hotwire
 gem 'turbo-rails'
@@ -72,8 +69,7 @@ group :development, :test do
   gem 'webmock'
   gem 'tzinfo-data'
   gem 'climate_control'
-  gem 'action-cable-testing'
-end
+  end
 
 group :development do
   gem 'sqlite3'

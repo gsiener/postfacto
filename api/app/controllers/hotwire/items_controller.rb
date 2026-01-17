@@ -40,9 +40,9 @@ module Hotwire
       respond_to do |format|
         if @item.save
           format.turbo_stream
-          format.html { redirect_to hotwire_retro_path(@retro) }
+          format.html { redirect_to retro_path(@retro) }
         else
-          format.html { redirect_to hotwire_retro_path(@retro), alert: @item.errors.full_messages.join(', ') }
+          format.html { redirect_to retro_path(@retro), alert: @item.errors.full_messages.join(', ') }
         end
       end
     end
@@ -51,9 +51,9 @@ module Hotwire
       respond_to do |format|
         if @item.update(update_item_params)
           format.turbo_stream
-          format.html { redirect_to hotwire_retro_path(@retro) }
+          format.html { redirect_to retro_path(@retro) }
         else
-          format.html { redirect_to hotwire_retro_path(@retro), alert: @item.errors.full_messages.join(', ') }
+          format.html { redirect_to retro_path(@retro), alert: @item.errors.full_messages.join(', ') }
         end
       end
     end
@@ -63,7 +63,7 @@ module Hotwire
 
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to hotwire_retro_path(@retro) }
+        format.html { redirect_to retro_path(@retro) }
       end
     end
 
@@ -72,7 +72,7 @@ module Hotwire
 
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to hotwire_retro_path(@retro) }
+        format.html { redirect_to retro_path(@retro) }
       end
     end
 
@@ -86,7 +86,7 @@ module Hotwire
 
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to hotwire_retro_path(@retro) }
+        format.html { redirect_to retro_path(@retro) }
       end
     end
 
@@ -95,7 +95,7 @@ module Hotwire
 
       respond_to do |format|
         format.turbo_stream { render 'highlight' }
-        format.html { redirect_to hotwire_retro_path(@retro) }
+        format.html { redirect_to retro_path(@retro) }
       end
     end
 
@@ -104,7 +104,7 @@ module Hotwire
 
       respond_to do |format|
         format.turbo_stream { render 'unhighlight' }
-        format.html { redirect_to hotwire_retro_path(@retro) }
+        format.html { redirect_to retro_path(@retro) }
       end
     end
 

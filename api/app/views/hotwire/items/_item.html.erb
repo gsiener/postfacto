@@ -13,7 +13,7 @@
         <%# Item Actions Menu %>
         <div class="ml-2 flex items-center space-x-1">
           <%# Vote Button %>
-          <%= button_to vote_hotwire_retro_item_path(retro, item),
+          <%= button_to vote_retro_item_path(retro, item),
               method: :post,
               class: 'inline-flex items-center p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded transition-colors',
               data: { controller: 'vote', action: 'click->vote#vote' } do %>
@@ -25,7 +25,7 @@
 
           <%# Highlight Button (if not done) %>
           <% unless item.done? %>
-            <%= button_to highlight_hotwire_retro_item_path(retro, item),
+            <%= button_to highlight_retro_item_path(retro, item),
                 method: :post,
                 class: 'inline-flex items-center p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors',
                 title: 'Discuss this item' do %>
@@ -46,7 +46,7 @@
           </button>
 
           <%# Delete Button %>
-          <%= button_to hotwire_retro_item_path(retro, item),
+          <%= button_to retro_item_path(retro, item),
               method: :delete,
               data: { turbo_confirm: 'Delete this item?' },
               class: 'inline-flex items-center p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors',
@@ -73,7 +73,7 @@
 
     <%# Edit Mode %>
     <div data-item-target="form" class="hidden">
-      <%= form_with model: item, url: hotwire_retro_item_path(retro, item), method: :patch, data: { action: 'keydown->item#keydown' } do |f| %>
+      <%= form_with model: item, url: retro_item_path(retro, item), method: :patch, data: { action: 'keydown->item#keydown' } do |f| %>
         <div class="space-y-3">
           <%= f.text_area :description,
               value: item.description,

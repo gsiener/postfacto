@@ -14,10 +14,10 @@
           </div>
         </div>
         <div class="ml-4 flex items-center space-x-2">
-          <%= button_to done_hotwire_retro_item_path(@retro, @item), method: :patch, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700' do %>
+          <%= button_to done_retro_item_path(@retro, @item), method: :patch, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700' do %>
             Done
           <% end %>
-          <%= button_to unhighlight_hotwire_retro_item_path(@retro, @item), method: :delete, data: { hotkeys_action: 'unhighlight' }, class: 'inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50' do %>
+          <%= button_to unhighlight_retro_item_path(@retro, @item), method: :delete, data: { hotkeys_action: 'unhighlight' }, class: 'inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50' do %>
             Cancel
           <% end %>
         </div>

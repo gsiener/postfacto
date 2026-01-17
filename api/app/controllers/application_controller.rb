@@ -29,8 +29,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-require 'security/auth_token'
-
 class ApplicationController < ActionController::Base
   protect_from_forgery
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -38,6 +36,6 @@ class ApplicationController < ActionController::Base
   private
 
   def record_not_found
-    render json: {}, status: :not_found
+    render plain: 'Not Found', status: :not_found
   end
 end

@@ -39,7 +39,7 @@ module Hotwire
     def create
       if @retro.validate_login?(params[:password])
         store_retro_session(@retro)
-        redirect_to session.delete(:return_to) || hotwire_retro_path(@retro)
+        redirect_to session.delete(:return_to) || retro_path(@retro)
       else
         flash.now[:alert] = 'Incorrect password. Please try again.'
         render :new, status: :unprocessable_entity
@@ -55,9 +55,9 @@ module Hotwire
     def magic_link
       if @retro.magic_link_enabled? && @retro.validate_join_token?(params[:token])
         store_retro_session(@retro)
-        redirect_to hotwire_retro_path(@retro)
+        redirect_to retro_path(@retro)
       else
-        redirect_to hotwire_retro_login_path(@retro), alert: 'Invalid or expired magic link.'
+        redirect_to retro_login_path(@retro), alert: 'Invalid or expired magic link.'
       end
     end
 

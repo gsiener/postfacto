@@ -5,7 +5,7 @@
 
 <%# Clear the form %>
 <%= turbo_stream.replace "new-#{@item.category}-item-form" do %>
-  <%= form_with model: Item.new, url: hotwire_retro_items_path(@retro), class: 'mb-4' do |f| %>
+  <%= form_with model: Item.new, url: retro_items_path(@retro), class: 'mb-4' do |f| %>
     <%= f.hidden_field :category, value: @item.category %>
     <div class="flex space-x-2">
       <%= f.text_area :description,

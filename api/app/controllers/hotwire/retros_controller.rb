@@ -56,7 +56,7 @@ module Hotwire
 
       if @retro.save
         store_retro_session(@retro)
-        redirect_to hotwire_retro_path(@retro), notice: 'Retro was successfully created.'
+        redirect_to retro_path(@retro), notice: 'Retro was successfully created.'
       else
         render :new, status: :unprocessable_entity
       end
@@ -67,7 +67,7 @@ module Hotwire
 
     def update
       if @retro.update(retro_update_params)
-        redirect_to hotwire_retro_path(@retro), notice: 'Retro was successfully updated.'
+        redirect_to retro_path(@retro), notice: 'Retro was successfully updated.'
       else
         render :edit, status: :unprocessable_entity
       end
@@ -75,7 +75,7 @@ module Hotwire
 
     def archive
       RetroArchiveService.archive(@retro, Time.now, params[:send_archive_email] != 'false')
-      redirect_to hotwire_retro_path(@retro), notice: 'Retro was successfully archived.'
+      redirect_to retro_path(@retro), notice: 'Retro was successfully archived.'
     end
 
     private

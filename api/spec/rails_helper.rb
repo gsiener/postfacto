@@ -37,7 +37,6 @@ require 'spec_helper'
 require 'request_spec_helper'
 require 'rspec/rails'
 require 'shoulda/matchers'
-require 'security/auth_token'
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -98,27 +97,5 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
     with.library :active_record
     with.library :active_model
-  end
-end
-
-def token_for(item)
-  case item
-  when Retro
-    AuthToken.generate(
-      item.slug,
-      'retros',
-      CLOCK.current_time,
-      nil,
-      Rails.application.secret_key_base
-    )
-
-  when User
-    AuthToken.generate(
-      item.email,
-      'users',
-      CLOCK.current_time,
-      nil,
-      Rails.application.secret_key_base
-    )
   end
 end

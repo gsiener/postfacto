@@ -53,7 +53,7 @@ module Hotwire
       return if retro_authenticated?(retro)
 
       session[:return_to] = request.fullpath
-      redirect_to hotwire_retro_login_path(retro), alert: 'Please enter the password to access this retro.'
+      redirect_to retro_login_path(retro), alert: 'Please enter the password to access this retro.'
     end
 
     def store_retro_session(retro)

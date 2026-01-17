@@ -5,7 +5,7 @@
 
 <%# Clear the form %>
 <%= turbo_stream.replace "new-action-item-form" do %>
-  <%= form_with model: ActionItem.new, url: hotwire_retro_action_items_path(@retro), class: 'mb-4' do |f| %>
+  <%= form_with model: ActionItem.new, url: retro_action_items_path(@retro), class: 'mb-4' do |f| %>
     <div class="flex space-x-2">
       <%= f.text_field :description,
           placeholder: "Add an action item...",

@@ -7,7 +7,7 @@
         <h1 class="text-3xl font-bold text-gray-900">Your Retros</h1>
         <p class="mt-2 text-gray-600">Select a retro to continue or create a new one.</p>
       </div>
-      <%= link_to new_hotwire_retro_path, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' do %>
+      <%= link_to new_retro_path, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' do %>
         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
@@ -20,7 +20,7 @@
         <ul class="divide-y divide-gray-200">
           <% @retros.each do |retro| %>
             <li>
-              <%= link_to hotwire_retro_path(retro), class: 'block hover:bg-gray-50 transition-colors' do %>
+              <%= link_to retro_path(retro), class: 'block hover:bg-gray-50 transition-colors' do %>
                 <div class="px-6 py-4">
                   <div class="flex items-center justify-between">
                     <div class="flex items-center min-w-0">
@@ -69,7 +69,7 @@
         <h3 class="mt-4 text-lg font-medium text-gray-900">No retros yet</h3>
         <p class="mt-2 text-sm text-gray-500">Get started by creating your first retrospective.</p>
         <div class="mt-6">
-          <%= link_to new_hotwire_retro_path, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700' do %>
+          <%= link_to new_retro_path, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700' do %>
             <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
