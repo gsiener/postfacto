@@ -29,12 +29,19 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 class Item < ActiveRecord::Base
+  include ActionView::RecordIdentifier
+
   belongs_to :retro, optional: true
   belongs_to :archive, optional: true
 
   enum :category, { happy: 'happy', meh: 'meh', sad: 'sad' }
 
   before_destroy :clear_highlight
+
+  # Turbo Stream broadcasts for real-time updates
+  after_create_commit -> { broadcast_append_to retro, target: "#{category}-items", partial: "hotwire/items/item", locals: { item: self, retro: retro } }
+  after_update_commit -> { broadcast_replace_to retro, partial: "hotwire/items/item", locals: { item: self, retro: retro } }
+  after_destroy_commit -> { broadcast_remove_to retro }
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[id description category vote_count done created_at updated_at archived_at archived retro_id archive_id]

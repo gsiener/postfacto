@@ -1,0 +1,4 @@
+<%# Replace the item to update vote count %>
+<%= turbo_stream.replace dom_id(@item) do %>
+  <%= render 'hotwire/items/item', item: @item, retro: @retro %>
+<% end %>

@@ -31,4 +31,17 @@
 class ActionItem < ActiveRecord::Base
   belongs_to :retro, optional: true
   belongs_to :archive, optional: true
+
+  # Turbo Stream broadcasts for real-time updates
+  after_create_commit -> { broadcast_append_to retro, target: "action-items", partial: "hotwire/action_items/action_item", locals: { action_item: self, retro: retro } }
+  after_update_commit -> { broadcast_replace_to retro, partial: "hotwire/action_items/action_item", locals: { action_item: self, retro: retro } }
+  after_destroy_commit -> { broadcast_remove_to retro }
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[id description done created_at updated_at archived_at archived retro_id archive_id]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[archive retro]
+  end
 end

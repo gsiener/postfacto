@@ -29,4 +29,17 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 module ApplicationHelper
+  # Returns Tailwind color name for retro item categories
+  def category_color(category)
+    case category.to_s
+    when 'happy'
+      'green'
+    when 'meh'
+      'yellow'
+    when 'sad'
+      'red'
+    else
+      'gray'
+    end
+  end
 end

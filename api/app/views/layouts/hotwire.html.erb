@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Postfacto" %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "actiontext", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="min-h-screen bg-slate-50">
+    <main class="flex flex-col min-h-screen">
+      <% if notice.present? %>
+        <div id="notice" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert" data-controller="flash" data-flash-delay-value="5000">
+          <p><%= notice %></p>
+        </div>
+      <% end %>
+
+      <% if alert.present? %>
+        <div id="alert" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert" data-controller="flash" data-flash-delay-value="5000">
+          <p><%= alert %></p>
+        </div>
+      <% end %>
+
+      <%= yield %>
+
+      <footer class="mt-auto py-4 text-center text-sm text-gray-500">
+        <p>
+          Postfacto is open source.
+          <a href="https://github.com/pivotal/postfacto" class="text-blue-600 hover:underline" target="_blank">View on GitHub</a>
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

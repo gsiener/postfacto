@@ -1,0 +1,11 @@
+<%# Replace the item to show done state %>
+<%= turbo_stream.replace dom_id(@item) do %>
+  <%= render 'hotwire/items/item', item: @item, retro: @retro %>
+<% end %>
+
+<%# Update highlighted item panel if this item was highlighted %>
+<% if @retro.highlighted_item_id.nil? %>
+  <%= turbo_stream.replace "highlighted-item" do %>
+    <%# Empty frame when no item is highlighted %>
+  <% end %>
+<% end %>

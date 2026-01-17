@@ -50,6 +50,15 @@ gem 'sassc-rails'
 gem 'uglifier'
 gem 'jwt'
 
+# Hotwire
+gem 'turbo-rails'
+gem 'stimulus-rails'
+gem 'importmap-rails'
+gem 'tailwindcss-rails'
+
+# Action Text for rich text editing
+gem 'image_processing', '~> 1.2'
+
 group :development, :test do
   gem 'dotenv-rails'
   gem 'pry'

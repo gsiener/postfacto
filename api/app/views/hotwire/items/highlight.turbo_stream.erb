@@ -1,0 +1,32 @@
+<%# Update the highlighted item panel %>
+<%= turbo_stream.replace "highlighted-item" do %>
+  <div class="bg-blue-50 border-b border-blue-200 px-4 py-6">
+    <div class="max-w-3xl mx-auto">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <span class="text-sm font-medium text-blue-600 uppercase tracking-wide">Discussing</span>
+          <p class="mt-2 text-xl font-medium text-gray-900"><%= @item.description %></p>
+          <div class="mt-4 flex items-center space-x-4">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= category_color(@item.category) %>-100 text-<%= category_color(@item.category) %>-800">
+              <%= @item.category.capitalize %>
+            </span>
+            <span class="text-sm text-gray-500"><%= @item.vote_count %> votes</span>
+          </div>
+        </div>
+        <div class="ml-4 flex items-center space-x-2">
+          <%= button_to done_hotwire_retro_item_path(@retro, @item), method: :patch, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700' do %>
+            Done
+          <% end %>
+          <%= button_to unhighlight_hotwire_retro_item_path(@retro, @item), method: :delete, data: { hotkeys_action: 'unhighlight' }, class: 'inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50' do %>
+            Cancel
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<%# Update the item to show highlight ring %>
+<%= turbo_stream.replace dom_id(@item) do %>
+  <%= render 'hotwire/items/item', item: @item, retro: @retro %>
+<% end %>

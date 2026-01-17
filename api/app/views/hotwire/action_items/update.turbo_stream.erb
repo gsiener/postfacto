@@ -1,0 +1,4 @@
+<%# Replace the updated action item %>
+<%= turbo_stream.replace dom_id(@action_item) do %>
+  <%= render 'hotwire/action_items/action_item', action_item: @action_item, retro: @retro %>
+<% end %>

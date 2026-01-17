@@ -1,0 +1,82 @@
+<% content_for(:title) { "Your Retros" } %>
+
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Your Retros</h1>
+        <p class="mt-2 text-gray-600">Select a retro to continue or create a new one.</p>
+      </div>
+      <%= link_to new_hotwire_retro_path, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' do %>
+        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        New Retro
+      <% end %>
+    </div>
+
+    <% if @retros.any? %>
+      <div class="bg-white shadow overflow-hidden rounded-lg">
+        <ul class="divide-y divide-gray-200">
+          <% @retros.each do |retro| %>
+            <li>
+              <%= link_to hotwire_retro_path(retro), class: 'block hover:bg-gray-50 transition-colors' do %>
+                <div class="px-6 py-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center min-w-0">
+                      <div class="flex-shrink-0">
+                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                          <span class="text-blue-600 font-medium text-lg"><%= retro.name.first.upcase %></span>
+                        </div>
+                      </div>
+                      <div class="ml-4 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate"><%= retro.name %></p>
+                        <p class="text-sm text-gray-500">/retros/<%= retro.slug %></p>
+                      </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                      <% if retro.is_private? %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          <svg class="h-3 w-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                          </svg>
+                          Private
+                        </span>
+                      <% else %>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                          Public
+                        </span>
+                      <% end %>
+                      <span class="text-sm text-gray-500">
+                        <%= time_ago_in_words(retro.created_at) %> ago
+                      </span>
+                      <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% else %>
+      <div class="bg-white shadow rounded-lg px-6 py-12 text-center">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        <h3 class="mt-4 text-lg font-medium text-gray-900">No retros yet</h3>
+        <p class="mt-2 text-sm text-gray-500">Get started by creating your first retrospective.</p>
+        <div class="mt-6">
+          <%= link_to new_hotwire_retro_path, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700' do %>
+            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Create Your First Retro
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

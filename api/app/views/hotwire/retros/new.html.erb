@@ -1,0 +1,109 @@
+<% content_for(:title) { "Create a New Retro" } %>
+
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-lg mx-auto">
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-6 py-8">
+        <h1 class="text-2xl font-bold text-gray-900 mb-6">Create a New Retro</h1>
+
+        <%= form_with model: @retro, url: hotwire_retros_path, class: 'space-y-6' do |f| %>
+          <% if @retro.errors.any? %>
+            <div class="rounded-md bg-red-50 p-4">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-red-800">There were errors with your submission:</h3>
+                  <div class="mt-2 text-sm text-red-700">
+                    <ul class="list-disc pl-5 space-y-1">
+                      <% @retro.errors.full_messages.each do |message| %>
+                        <li><%= message %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <div>
+            <%= f.label :name, 'Retro Name', class: 'block text-sm font-medium text-gray-700' %>
+            <div class="mt-1">
+              <%= f.text_field :name,
+                  autofocus: true,
+                  placeholder: 'My Team Retro',
+                  class: 'appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm' %>
+            </div>
+          </div>
+
+          <div>
+            <%= f.label :slug, 'URL Slug (optional)', class: 'block text-sm font-medium text-gray-700' %>
+            <div class="mt-1 flex rounded-md shadow-sm">
+              <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 sm:text-sm">
+                /retros/
+              </span>
+              <%= f.text_field :slug,
+                  placeholder: 'my-team-retro',
+                  class: 'flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 sm:text-sm' %>
+            </div>
+            <p class="mt-1 text-sm text-gray-500">Leave blank to auto-generate from name.</p>
+          </div>
+
+          <div class="border-t border-gray-200 pt-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Privacy Settings</h3>
+
+            <div class="space-y-4">
+              <div class="flex items-start">
+                <%= f.check_box :is_private, class: 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1' %>
+                <div class="ml-3">
+                  <%= f.label :is_private, 'Make this retro private', class: 'block text-sm font-medium text-gray-700' %>
+                  <p class="text-sm text-gray-500">Only people with the password can access this retro.</p>
+                </div>
+              </div>
+
+              <div id="password-field" class="ml-7">
+                <%= f.label :password, 'Password', class: 'block text-sm font-medium text-gray-700' %>
+                <div class="mt-1">
+                  <%= f.password_field :password,
+                      placeholder: 'Enter a password',
+                      class: 'appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm' %>
+                </div>
+              </div>
+
+              <div class="flex items-start">
+                <%= f.check_box :is_magic_link_enabled, class: 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1' %>
+                <div class="ml-3">
+                  <%= f.label :is_magic_link_enabled, 'Enable magic link', class: 'block text-sm font-medium text-gray-700' %>
+                  <p class="text-sm text-gray-500">Generate a shareable link that doesn't require a password.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-200 pt-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">Display Settings</h3>
+
+            <div>
+              <%= f.label :item_order, 'Item Order', class: 'block text-sm font-medium text-gray-700' %>
+              <div class="mt-1">
+                <%= f.select :item_order,
+                    [['By time (oldest first)', 'time'], ['By votes (most votes first)', 'votes']],
+                    {},
+                    class: 'block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md' %>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+            <%= link_to 'Cancel', hotwire_retros_path, class: 'px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' %>
+            <%= f.submit 'Create Retro',
+                class: 'px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

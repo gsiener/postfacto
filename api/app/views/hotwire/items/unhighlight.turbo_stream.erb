@@ -1,0 +1,9 @@
+<%# Clear the highlighted item panel %>
+<%= turbo_stream.replace "highlighted-item" do %>
+  <%# Empty turbo frame %>
+<% end %>
+
+<%# Update the item to remove highlight ring %>
+<%= turbo_stream.replace dom_id(@item) do %>
+  <%= render 'hotwire/items/item', item: @item, retro: @retro %>
+<% end %>
