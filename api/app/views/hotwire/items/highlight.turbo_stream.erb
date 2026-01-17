@@ -1,23 +1,21 @@
 <%# Update the highlighted item panel %>
 <%= turbo_stream.replace "highlighted-item" do %>
-  <div class="bg-blue-50 border-b border-blue-200 px-4 py-6">
-    <div class="max-w-3xl mx-auto">
+  <div class="bg-amber-50 border-b-4 border-amber-400 px-4 py-6 shadow-inner">
+    <div class="max-w-4xl mx-auto">
       <div class="flex items-start justify-between">
         <div class="flex-1">
-          <span class="text-sm font-medium text-blue-600 uppercase tracking-wide">Discussing</span>
-          <p class="mt-2 text-xl font-medium text-gray-900"><%= @item.description %></p>
-          <div class="mt-4 flex items-center space-x-4">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= category_badge_class(@item.category) %>">
-              <%= @item.category.capitalize %>
-            </span>
-            <span class="text-sm text-gray-500"><%= @item.vote_count %> votes</span>
+          <div class="flex items-center space-x-2">
+            <span class="text-2xl"><%= category_emoji(@item.category) %></span>
+            <span class="text-sm font-semibold text-amber-700 uppercase tracking-wide">Currently Discussing</span>
           </div>
+          <p class="mt-3 text-xl text-gray-900"><%= @item.description %></p>
+          <p class="mt-2 text-sm text-gray-500"><%= @item.vote_count %> votes</p>
         </div>
-        <div class="ml-4 flex items-center space-x-2">
-          <%= button_to done_retro_item_path(@retro, @item), method: :patch, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700' do %>
-            Done
+        <div class="ml-6 flex items-center space-x-2">
+          <%= button_to done_retro_item_path(@retro, @item), method: :patch, class: 'inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-600 shadow transition-colors' do %>
+            ✓ Done
           <% end %>
-          <%= button_to unhighlight_retro_item_path(@retro, @item), method: :delete, data: { hotkeys_action: 'unhighlight' }, class: 'inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50' do %>
+          <%= button_to unhighlight_retro_item_path(@retro, @item), method: :delete, class: 'inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-100 shadow transition-colors' do %>
             Cancel
           <% end %>
         </div>

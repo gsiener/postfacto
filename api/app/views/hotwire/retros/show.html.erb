@@ -1,39 +1,29 @@
 <% content_for(:title) { @retro.name } %>
 
-<div class="min-h-screen flex flex-col" data-controller="hotkeys" data-hotkeys-retro-id-value="<%= @retro.slug %>">
-  <%# Header %>
-  <header class="bg-white shadow-sm border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+<div class="min-h-screen flex flex-col bg-gray-100" data-controller="hotkeys" data-hotkeys-retro-id-value="<%= @retro.slug %>">
+  <%# Header - Teal like original Postfacto %>
+  <header class="bg-teal-600 shadow-md">
+    <div class="max-w-full mx-auto px-4 py-3 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-          <h1 class="text-2xl font-bold text-gray-900"><%= @retro.name %></h1>
+          <h1 class="text-xl font-semibold text-white"><%= @retro.name %></h1>
           <% if @retro.is_private? %>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-              Private
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-teal-700 text-teal-100">
+              🔒 Private
             </span>
           <% end %>
         </div>
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-2">
           <% if @retro.video_link.present? %>
-            <%= link_to @retro.video_link, target: '_blank', class: 'inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50' do %>
-              <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-              </svg>
-              Video Call
+            <%= link_to @retro.video_link, target: '_blank', class: 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded text-teal-100 hover:bg-teal-700 transition-colors' do %>
+              📹 Video
             <% end %>
           <% end %>
-          <%= link_to edit_retro_path(@retro), class: 'inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50' do %>
-            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            Settings
+          <%= link_to edit_retro_path(@retro), class: 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded text-teal-100 hover:bg-teal-700 transition-colors' do %>
+            ⚙️ Settings
           <% end %>
-          <%= button_to archive_retro_path(@retro), method: :post, data: { turbo_confirm: 'Archive this retro? All items will be moved to the archive.' }, class: 'inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700' do %>
-            <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-            </svg>
-            Archive
+          <%= button_to archive_retro_path(@retro), method: :post, data: { turbo_confirm: 'Archive this retro? All items will be moved to the archive.' }, class: 'inline-flex items-center px-3 py-1.5 text-sm font-medium rounded bg-teal-700 text-white hover:bg-teal-800 transition-colors' do %>
+            📦 Archive
           <% end %>
         </div>
       </div>
@@ -43,24 +33,22 @@
   <%# Highlighted Item Discussion Panel %>
   <% if @highlighted_item %>
     <%= turbo_frame_tag "highlighted-item" do %>
-      <div class="bg-blue-50 border-b border-blue-200 px-4 py-6">
-        <div class="max-w-3xl mx-auto">
+      <div class="bg-amber-50 border-b-4 border-amber-400 px-4 py-6 shadow-inner">
+        <div class="max-w-4xl mx-auto">
           <div class="flex items-start justify-between">
             <div class="flex-1">
-              <span class="text-sm font-medium text-blue-600 uppercase tracking-wide">Discussing</span>
-              <p class="mt-2 text-xl font-medium text-gray-900"><%= @highlighted_item.description %></p>
-              <div class="mt-4 flex items-center space-x-4">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= category_badge_class(@highlighted_item.category) %>">
-                  <%= @highlighted_item.category.capitalize %>
-                </span>
-                <span class="text-sm text-gray-500"><%= @highlighted_item.vote_count %> votes</span>
+              <div class="flex items-center space-x-2">
+                <span class="text-2xl"><%= category_emoji(@highlighted_item.category) %></span>
+                <span class="text-sm font-semibold text-amber-700 uppercase tracking-wide">Currently Discussing</span>
               </div>
+              <p class="mt-3 text-xl text-gray-900"><%= @highlighted_item.description %></p>
+              <p class="mt-2 text-sm text-gray-500"><%= @highlighted_item.vote_count %> votes</p>
             </div>
-            <div class="ml-4 flex items-center space-x-2">
-              <%= button_to done_retro_item_path(@retro, @highlighted_item), method: :patch, class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700' do %>
-                Done
+            <div class="ml-6 flex items-center space-x-2">
+              <%= button_to done_retro_item_path(@retro, @highlighted_item), method: :patch, class: 'inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-white bg-green-500 hover:bg-green-600 shadow transition-colors' do %>
+                ✓ Done
               <% end %>
-              <%= button_to unhighlight_retro_item_path(@retro, @highlighted_item), method: :delete, data: { hotkeys_action: 'unhighlight' }, class: 'inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50' do %>
+              <%= button_to unhighlight_retro_item_path(@retro, @highlighted_item), method: :delete, class: 'inline-flex items-center px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-100 shadow transition-colors' do %>
                 Cancel
               <% end %>
             </div>
@@ -73,55 +61,49 @@
   <% end %>
 
   <%# Mobile Tabs %>
-  <div class="sm:hidden" data-controller="tabs" data-tabs-active-tab-value="happy">
-    <div class="border-b border-gray-200">
-      <nav class="-mb-px flex" aria-label="Tabs">
-        <button type="button" data-tabs-target="tab" data-tabs-tab="happy" data-action="click->tabs#switch" class="w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-          Happy
-        </button>
-        <button type="button" data-tabs-target="tab" data-tabs-tab="meh" data-action="click->tabs#switch" class="w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-          Meh
-        </button>
-        <button type="button" data-tabs-target="tab" data-tabs-tab="sad" data-action="click->tabs#switch" class="w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-          Sad
-        </button>
-        <button type="button" data-tabs-target="tab" data-tabs-tab="action" data-action="click->tabs#switch" class="w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300">
-          Action
-        </button>
-      </nav>
-    </div>
+  <div class="sm:hidden bg-white border-b" data-controller="tabs" data-tabs-active-tab-value="happy">
+    <nav class="flex">
+      <button type="button" data-tabs-target="tab" data-tabs-tab="happy" data-action="click->tabs#switch" class="flex-1 py-3 text-center text-sm font-medium border-b-2 border-transparent hover:border-green-300 focus:outline-none">
+        😊
+      </button>
+      <button type="button" data-tabs-target="tab" data-tabs-tab="meh" data-action="click->tabs#switch" class="flex-1 py-3 text-center text-sm font-medium border-b-2 border-transparent hover:border-yellow-300 focus:outline-none">
+        😐
+      </button>
+      <button type="button" data-tabs-target="tab" data-tabs-tab="sad" data-action="click->tabs#switch" class="flex-1 py-3 text-center text-sm font-medium border-b-2 border-transparent hover:border-red-300 focus:outline-none">
+        😢
+      </button>
+      <button type="button" data-tabs-target="tab" data-tabs-tab="action" data-action="click->tabs#switch" class="flex-1 py-3 text-center text-sm font-medium border-b-2 border-transparent hover:border-purple-300 focus:outline-none">
+        📋
+      </button>
+    </nav>
 
     <%# Mobile Content Panels %>
-    <div data-tabs-target="panel" data-tabs-panel="happy" class="p-4">
+    <div data-tabs-target="panel" data-tabs-panel="happy" class="p-4 bg-green-50">
       <%= render 'hotwire/retros/column', retro: @retro, category: 'happy', items: @items_by_category[:happy] %>
     </div>
-    <div data-tabs-target="panel" data-tabs-panel="meh" class="hidden p-4">
+    <div data-tabs-target="panel" data-tabs-panel="meh" class="hidden p-4 bg-yellow-50">
       <%= render 'hotwire/retros/column', retro: @retro, category: 'meh', items: @items_by_category[:meh] %>
     </div>
-    <div data-tabs-target="panel" data-tabs-panel="sad" class="hidden p-4">
+    <div data-tabs-target="panel" data-tabs-panel="sad" class="hidden p-4 bg-red-50">
       <%= render 'hotwire/retros/column', retro: @retro, category: 'sad', items: @items_by_category[:sad] %>
     </div>
-    <div data-tabs-target="panel" data-tabs-panel="action" class="hidden p-4">
+    <div data-tabs-target="panel" data-tabs-panel="action" class="hidden p-4 bg-purple-50">
       <%= render 'hotwire/retros/action_panel', retro: @retro, action_items: @action_items %>
     </div>
   </div>
 
-  <%# Desktop Layout %>
+  <%# Desktop Layout - 4 columns like original %>
   <div class="hidden sm:flex flex-1 overflow-hidden">
-    <%# Three Columns %>
-    <div class="flex-1 flex">
-      <div class="flex-1 border-r border-gray-200 overflow-y-auto p-4">
-        <%= render 'hotwire/retros/column', retro: @retro, category: 'happy', items: @items_by_category[:happy] %>
-      </div>
-      <div class="flex-1 border-r border-gray-200 overflow-y-auto p-4">
-        <%= render 'hotwire/retros/column', retro: @retro, category: 'meh', items: @items_by_category[:meh] %>
-      </div>
-      <div class="flex-1 overflow-y-auto p-4">
-        <%= render 'hotwire/retros/column', retro: @retro, category: 'sad', items: @items_by_category[:sad] %>
-      </div>
+    <div class="flex-1 overflow-y-auto p-4 bg-green-50">
+      <%= render 'hotwire/retros/column', retro: @retro, category: 'happy', items: @items_by_category[:happy] %>
     </div>
-    <%# Action Items Panel %>
-    <div class="w-80 border-l border-gray-200 overflow-y-auto p-4 bg-gray-50">
+    <div class="flex-1 overflow-y-auto p-4 bg-yellow-50">
+      <%= render 'hotwire/retros/column', retro: @retro, category: 'meh', items: @items_by_category[:meh] %>
+    </div>
+    <div class="flex-1 overflow-y-auto p-4 bg-red-50">
+      <%= render 'hotwire/retros/column', retro: @retro, category: 'sad', items: @items_by_category[:sad] %>
+    </div>
+    <div class="w-80 overflow-y-auto p-4 bg-purple-50 border-l border-purple-200">
       <%= render 'hotwire/retros/action_panel', retro: @retro, action_items: @action_items %>
     </div>
   </div>

@@ -70,4 +70,32 @@ module ApplicationHelper
       'bg-gray-100 text-gray-800'
     end
   end
+
+  # Returns emoji for retro item categories
+  def category_emoji(category)
+    case category.to_s
+    when 'happy'
+      '😊'
+    when 'meh'
+      '😐'
+    when 'sad'
+      '😢'
+    else
+      '📝'
+    end
+  end
+
+  # Returns button color class for category
+  def category_button_class(category)
+    case category.to_s
+    when 'happy'
+      'bg-green-500 hover:bg-green-600'
+    when 'meh'
+      'bg-yellow-500 hover:bg-yellow-600'
+    when 'sad'
+      'bg-red-500 hover:bg-red-600'
+    else
+      'bg-gray-500 hover:bg-gray-600'
+    end
+  end
 end
