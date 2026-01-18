@@ -8,6 +8,7 @@ services:
   - type: web
     name: postfacto
     runtime: ruby
+    rubyVersion: "3.3"
     plan: free
     buildCommand: "./bin/render-build.sh"
     startCommand: "bundle exec puma -C config/puma.rb"
