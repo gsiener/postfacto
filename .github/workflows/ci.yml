@@ -53,14 +53,3 @@ jobs:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postfacto_test
         run: bundle exec rake
-
-  # Deploy only on master pushes after all tests pass
-  deploy:
-    name: Deploy to Render
-    needs: [test]
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    steps:
-      - name: Trigger Render Deploy
-        run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
