@@ -29,6 +29,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 class Retro < ActiveRecord::Base
+  include Ransackable
   extend FriendlyId
 
   has_many :items, -> { order(:created_at).where(archived: false) }, dependent: :destroy
@@ -39,15 +40,11 @@ class Retro < ActiveRecord::Base
   belongs_to :highlighted_item, class_name: 'Item', optional: true
   enum :item_order, { time: 'time', votes: 'votes' }
 
-  def self.ransackable_attributes(_auth_object = nil)
-    %w[id name slug is_private video_link created_at updated_at user_id item_order send_archive_email]
-  end
-
-  def self.ransackable_associations(_auth_object = nil)
-    %w[items action_items archives user]
-  end
+  ransackable attributes: %w[id name slug is_private video_link created_at updated_at user_id item_order send_archive_email],
+              associations: %w[items action_items archives user]
 
   MAX_SLUG_LENGTH = 236
+  MAGIC_LINK_EXPIRY = 7.days
 
   friendly_id :generate_slug, use: :slugged
   validates_uniqueness_of :slug
@@ -77,6 +74,12 @@ class Retro < ActiveRecord::Base
 
   def validate_join_token?(val)
     val == join_token
+  end
+
+  def magic_link_expired?
+    return true unless join_token_created_at.present?
+
+    Time.current >= (join_token_created_at + MAGIC_LINK_EXPIRY)
   end
 
   def magic_link_enabled=(val)
@@ -140,9 +143,11 @@ class Retro < ActiveRecord::Base
 
   def recompute_join_token
     self.join_token = SecureRandom.alphanumeric(32)
+    self.join_token_created_at = Time.current
   end
 
   def clear_join_token
     self.join_token = nil
+    self.join_token_created_at = nil
   end
 end

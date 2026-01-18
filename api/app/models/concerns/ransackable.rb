@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Postfacto, a free, open-source and self-hosted retro tool aimed at helping
 # remote teams.
@@ -28,14 +30,32 @@
 #
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-class ActionItem < ActiveRecord::Base
-  include Ransackable
 
-  belongs_to :retro, optional: true
-  belongs_to :archive, optional: true
+# Provides a DSL for configuring Ransack searchable attributes and associations.
+#
+# Usage:
+#   class MyModel < ApplicationRecord
+#     include Ransackable
+#
+#     ransackable attributes: %w[id name created_at],
+#                 associations: %w[items users]
+#   end
+#
+module Ransackable
+  extend ActiveSupport::Concern
 
-  validates :description, presence: true
+  class_methods do
+    def ransackable(attributes: [], associations: [])
+      @ransackable_attrs = attributes.map(&:to_s)
+      @ransackable_assocs = associations.map(&:to_s)
+    end
 
-  ransackable attributes: %w[id description done created_at updated_at archived_at archived retro_id archive_id],
-              associations: %w[archive retro]
+    def ransackable_attributes(_auth_object = nil)
+      @ransackable_attrs || []
+    end
+
+    def ransackable_associations(_auth_object = nil)
+      @ransackable_assocs || []
+    end
+  end
 end

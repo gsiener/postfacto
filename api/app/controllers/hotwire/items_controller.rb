@@ -2,8 +2,8 @@
 
 class Hotwire::ItemsController < Hotwire::BaseController
   before_action :load_retro
+  before_action :authenticate_retro!, except: [:create, :vote]
   before_action :load_item, only: [:update, :destroy, :vote, :highlight, :unhighlight, :done]
-  skip_before_action :authenticate_retro!, only: [:create, :vote]
 
   def create
     @item = @retro.items.build(item_params)
@@ -53,6 +53,7 @@ class Hotwire::ItemsController < Hotwire::BaseController
   end
 
   def unhighlight
+    @item.update!(done: true)
     @retro.update!(highlighted_item_id: nil)
     respond_to do |format|
       format.turbo_stream
@@ -61,8 +62,9 @@ class Hotwire::ItemsController < Hotwire::BaseController
   end
 
   def done
-    @item.update!(done: true)
-    @retro.update!(highlighted_item_id: nil) if @retro.highlighted_item_id == @item.id
+    @item.update!(done: !@item.done)
+    # Clear highlight if marking as done
+    @retro.update!(highlighted_item_id: nil) if @item.done && @retro.highlighted_item_id == @item.id
     respond_to do |format|
       format.turbo_stream
       format.html { redirect_to retro_path(@retro) }

@@ -2,6 +2,7 @@
 
 class Hotwire::ArchivesController < Hotwire::BaseController
   before_action :load_retro
+  before_action :authenticate_retro!
 
   def index
     @archives = @retro.archives.order(created_at: :desc)

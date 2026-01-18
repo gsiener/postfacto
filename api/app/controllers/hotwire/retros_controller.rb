@@ -44,7 +44,7 @@ class Hotwire::RetrosController < Hotwire::BaseController
   end
 
   def archive
-    RetroArchiveService.new(@retro).call
+    RetroArchiveService.archive(@retro, Time.current, false)
     redirect_to retro_path(@retro), notice: 'Archived!'
   end
 

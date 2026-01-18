@@ -64,6 +64,34 @@
           setTimeout(() => this.element.remove(), 300)
         }
       })
+
+      // Item form controller - resets form after successful submission
+      Stimulus.register("item-form", class extends Controller {
+        static targets = ["input"]
+
+        reset(event) {
+          if (event.detail.success) {
+            if (this.hasInputTarget) {
+              this.inputTarget.value = ""
+            }
+            this.element.reset()
+          }
+        }
+      })
+
+      // Action item form controller - resets form after successful submission
+      Stimulus.register("action-item-form", class extends Controller {
+        static targets = ["input"]
+
+        reset(event) {
+          if (event.detail.success) {
+            if (this.hasInputTarget) {
+              this.inputTarget.value = ""
+            }
+            this.element.reset()
+          }
+        }
+      })
     </script>
   </head>
 

@@ -2,13 +2,13 @@
 
 class Hotwire::SessionsController < Hotwire::BaseController
   skip_before_action :authenticate_retro!
-  before_action :load_retro
+  before_action :load_retro, except: [:magic_link]
 
   def new
   end
 
   def create
-    if @retro.validate_login!(params[:password])
+    if @retro.validate_login?(params[:password])
       mark_retro_authenticated!(@retro)
       redirect_to retro_path(@retro)
     else

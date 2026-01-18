@@ -49,7 +49,7 @@
               <p class="text-xl font-medium text-gray-800"><%= highlighted_item.description %></p>
             </div>
             <%= button_to unhighlight_retro_item_path(@retro, highlighted_item),
-                method: :patch,
+                method: :delete,
                 class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors",
                 data: { turbo_stream: true } do %>
               Done Discussing

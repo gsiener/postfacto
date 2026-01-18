@@ -67,6 +67,10 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
+  # Disable Sass CSS compressor to avoid processing pre-built Tailwind CSS
+  # Tailwind v4 uses modern CSS syntax (e.g., rgb(from red r g b)) that sassc cannot parse
+  config.assets.css_compressor = nil
+
   config.action_cable.allowed_request_origins = [/.*/]
 
   # Raises error for missing translations

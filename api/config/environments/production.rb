@@ -54,7 +54,9 @@ Rails.application.configure do
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
-  # config.assets.css_compressor = :sass
+  # Disable Sass CSS compressor to avoid processing pre-built Tailwind CSS
+  # Tailwind v4 uses modern CSS syntax (e.g., rgb(from red r g b)) that sassc cannot parse
+  config.assets.css_compressor = nil
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
   config.assets.compile = false

@@ -29,20 +29,35 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 class Item < ActiveRecord::Base
+  include Ransackable
+
   belongs_to :retro, optional: true
   belongs_to :archive, optional: true
 
   enum :category, { happy: 'happy', meh: 'meh', sad: 'sad' }
 
+  validates :description, presence: true
+  validates :category, presence: true
+
+  # Query scopes for reducing N+1 queries and improving code organization
+  scope :active, -> { where(archived: false) }
+  scope :for_discussion, -> { active.where(done: false) }
+  scope :by_votes, -> { order(vote_count: :desc) }
+  scope :by_created_at, -> { order(created_at: :asc) }
+
+  # Returns items organized by category for efficient retrieval
+  def self.grouped_by_category
+    {
+      happy: happy.by_created_at,
+      meh: meh.by_created_at,
+      sad: sad.by_created_at
+    }
+  end
+
   before_destroy :clear_highlight
 
-  def self.ransackable_attributes(_auth_object = nil)
-    %w[id description category vote_count done created_at updated_at archived_at archived retro_id archive_id]
-  end
-
-  def self.ransackable_associations(_auth_object = nil)
-    %w[archive retro]
-  end
+  ransackable attributes: %w[id description category vote_count done created_at updated_at archived_at archived retro_id archive_id],
+              associations: %w[archive retro]
 
   def vote!
     increment! :vote_count
@@ -51,15 +66,8 @@ class Item < ActiveRecord::Base
   private
 
   def clear_highlight
-    if using_sqlite? && (retro.highlighted_item_id == id)
-      retro.highlighted_item_id = nil
-      retro.save!
-    end
-  end
+    return unless retro&.highlighted_item_id == id
 
-  def using_sqlite?
-    return false unless defined? ActiveRecord::ConnectionAdapters::SQLite3Adapter
-
-    ActiveRecord::Base.connection.instance_of? ActiveRecord::ConnectionAdapters::SQLite3Adapter
+    retro.update!(highlighted_item_id: nil)
   end
 end
