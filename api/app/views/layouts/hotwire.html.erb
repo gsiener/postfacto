@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><%= content_for(:title) || "Postfacto" %></title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <script type="module">
+      import * as Turbo from 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/dist/turbo.es2017-esm.min.js'
+      import { Application, Controller } from 'https://cdn.jsdelivr.net/npm/@hotwired/stimulus@3.2.2/dist/stimulus.js'
+
+      window.Stimulus = Application.start()
+
+      // Item controller
+      Stimulus.register("item", class extends Controller {
+        static targets = ["display", "form", "input"]
+
+        edit(event) {
+          if (event) event.preventDefault()
+          if (this.hasDisplayTarget) this.displayTarget.classList.add("hidden")
+          if (this.hasFormTarget) {
+            this.formTarget.classList.remove("hidden")
+            if (this.hasInputTarget) {
+              this.inputTarget.focus()
+              this.inputTarget.select()
+            }
+          }
+        }
+
+        cancel(event) {
+          if (event) event.preventDefault()
+          if (this.hasDisplayTarget) this.displayTarget.classList.remove("hidden")
+          if (this.hasFormTarget) this.formTarget.classList.add("hidden")
+        }
+
+        keydown(event) {
+          if (event.key === "Escape") this.cancel()
+        }
+      })
+
+      // Vote controller
+      Stimulus.register("vote", class extends Controller {
+        static targets = ["count"]
+
+        vote() {
+          if (this.hasCountTarget) {
+            this.countTarget.classList.add("scale-125")
+            setTimeout(() => this.countTarget.classList.remove("scale-125"), 200)
+          }
+        }
+      })
+
+      // Flash controller
+      Stimulus.register("flash", class extends Controller {
+        connect() {
+          setTimeout(() => this.dismiss(), 3000)
+        }
+
+        dismiss() {
+          this.element.classList.add("opacity-0", "transition-opacity")
+          setTimeout(() => this.element.remove(), 300)
+        }
+      })
+    </script>
+  </head>
+
+  <body class="min-h-screen bg-gray-100">
+    <%= yield %>
+  </body>
+</html>

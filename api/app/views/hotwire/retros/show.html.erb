@@ -1,0 +1,181 @@
+<%= turbo_stream_from @retro %>
+
+<div class="min-h-screen bg-gray-100">
+  <!-- Header -->
+  <header class="bg-[#4BC1B1] text-white py-4 px-6 shadow-md">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold"><%= @retro.name %></h1>
+      <div class="flex items-center gap-4">
+        <% if @retro.video_link.present? %>
+          <%= link_to @retro.video_link, target: "_blank", class: "text-white hover:text-gray-200" do %>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+          <% end %>
+        <% end %>
+        <%= link_to edit_retro_path(@retro), class: "text-white hover:text-gray-200" do %>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+        <% end %>
+        <%= link_to retro_archives_path(@retro), class: "text-white hover:text-gray-200" do %>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+          </svg>
+        <% end %>
+      </div>
+    </div>
+  </header>
+
+  <!-- Highlighted Item Panel -->
+  <% if @retro.highlighted_item_id.present? %>
+    <% highlighted_item = @retro.items.find_by(id: @retro.highlighted_item_id) %>
+    <% if highlighted_item %>
+      <div id="highlighted-item-panel" class="bg-white border-b-4 border-[#4BC1B1] shadow-lg p-6">
+        <div class="max-w-7xl mx-auto">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <span class="text-3xl">
+                <% case highlighted_item.category %>
+                <% when 'happy' %>
+                  <span class="text-[#51c0b1]">&#128522;</span>
+                <% when 'meh' %>
+                  <span class="text-[#fec722]">&#128528;</span>
+                <% when 'sad' %>
+                  <span class="text-[#e34e40]">&#128546;</span>
+                <% end %>
+              </span>
+              <p class="text-xl font-medium text-gray-800"><%= highlighted_item.description %></p>
+            </div>
+            <%= button_to unhighlight_retro_item_path(@retro, highlighted_item),
+                method: :patch,
+                class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors",
+                data: { turbo_stream: true } do %>
+              Done Discussing
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div id="highlighted-item-panel"></div>
+  <% end %>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-6 px-4">
+    <!-- Three Columns -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- Happy Column -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+        <div class="bg-[#51c0b1] text-white py-3 px-4">
+          <h2 class="text-lg font-semibold flex items-center gap-2">
+            <span>&#128522;</span> Happy
+          </h2>
+        </div>
+        <div class="p-4">
+          <%= form_with url: retro_items_path(@retro),
+              method: :post,
+              data: { turbo_stream: true, controller: "item-form", action: "turbo:submit-end->item-form#reset" },
+              class: "mb-4" do |f| %>
+            <%= hidden_field_tag "item[category]", "happy" %>
+            <%= text_area_tag "item[description]", nil,
+                placeholder: "I'm glad that...",
+                class: "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#51c0b1] focus:border-transparent resize-none",
+                rows: 2,
+                data: { item_form_target: "input" } %>
+            <div class="mt-2 flex justify-end">
+              <%= submit_tag "Add", class: "bg-[#51c0b1] hover:bg-[#45a89b] text-white px-4 py-2 rounded-lg transition-colors cursor-pointer" %>
+            </div>
+          <% end %>
+          <div id="happy-items" class="space-y-3">
+            <%= render partial: "hotwire/items/item", collection: @retro.items.where(category: "happy").order(created_at: :desc), as: :item %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meh Column -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+        <div class="bg-[#fec722] text-white py-3 px-4">
+          <h2 class="text-lg font-semibold flex items-center gap-2">
+            <span>&#128528;</span> Meh
+          </h2>
+        </div>
+        <div class="p-4">
+          <%= form_with url: retro_items_path(@retro),
+              method: :post,
+              data: { turbo_stream: true, controller: "item-form", action: "turbo:submit-end->item-form#reset" },
+              class: "mb-4" do |f| %>
+            <%= hidden_field_tag "item[category]", "meh" %>
+            <%= text_area_tag "item[description]", nil,
+                placeholder: "I'm wondering about...",
+                class: "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#fec722] focus:border-transparent resize-none",
+                rows: 2,
+                data: { item_form_target: "input" } %>
+            <div class="mt-2 flex justify-end">
+              <%= submit_tag "Add", class: "bg-[#fec722] hover:bg-[#e5b31f] text-white px-4 py-2 rounded-lg transition-colors cursor-pointer" %>
+            </div>
+          <% end %>
+          <div id="meh-items" class="space-y-3">
+            <%= render partial: "hotwire/items/item", collection: @retro.items.where(category: "meh").order(created_at: :desc), as: :item %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sad Column -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+        <div class="bg-[#e34e40] text-white py-3 px-4">
+          <h2 class="text-lg font-semibold flex items-center gap-2">
+            <span>&#128546;</span> Sad
+          </h2>
+        </div>
+        <div class="p-4">
+          <%= form_with url: retro_items_path(@retro),
+              method: :post,
+              data: { turbo_stream: true, controller: "item-form", action: "turbo:submit-end->item-form#reset" },
+              class: "mb-4" do |f| %>
+            <%= hidden_field_tag "item[category]", "sad" %>
+            <%= text_area_tag "item[description]", nil,
+                placeholder: "It wasn't so great that...",
+                class: "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#e34e40] focus:border-transparent resize-none",
+                rows: 2,
+                data: { item_form_target: "input" } %>
+            <div class="mt-2 flex justify-end">
+              <%= submit_tag "Add", class: "bg-[#e34e40] hover:bg-[#cc4639] text-white px-4 py-2 rounded-lg transition-colors cursor-pointer" %>
+            </div>
+          <% end %>
+          <div id="sad-items" class="space-y-3">
+            <%= render partial: "hotwire/items/item", collection: @retro.items.where(category: "sad").order(created_at: :desc), as: :item %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Items Section -->
+    <div class="bg-[#f2eee2] rounded-lg shadow-md p-6 border border-gray-200">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+        </svg>
+        Action Items
+      </h2>
+
+      <%= form_with url: retro_action_items_path(@retro),
+          method: :post,
+          data: { turbo_stream: true, controller: "action-item-form", action: "turbo:submit-end->action-item-form#reset" },
+          class: "mb-4" do |f| %>
+        <div class="flex gap-2">
+          <%= text_field_tag "action_item[description]", nil,
+              placeholder: "Add an action item...",
+              class: "flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4BC1B1] focus:border-transparent",
+              data: { action_item_form_target: "input" } %>
+          <%= submit_tag "Add", class: "bg-[#4BC1B1] hover:bg-[#45a89b] text-white px-6 py-2 rounded-lg transition-colors cursor-pointer" %>
+        </div>
+      <% end %>
+
+      <div id="action-items" class="space-y-2">
+        <%= render partial: "hotwire/action_items/action_item", collection: @retro.action_items.order(created_at: :desc), as: :action_item %>
+      </div>
+    </div>
+  </main>
+</div>

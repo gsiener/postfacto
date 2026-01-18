@@ -1,0 +1,87 @@
+<%= turbo_frame_tag dom_id(item) do %>
+  <div class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow"
+       data-controller="item"
+       data-item-id="<%= item.id %>"
+       id="item-container-<%= item.id %>">
+    <div data-item-target="display" class="<%= item.done ? 'opacity-50' : '' %>">
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex-1">
+          <!-- Clickable text to highlight -->
+          <%= button_to highlight_retro_item_path(item.retro, item),
+              method: :post,
+              class: "text-left text-gray-800 hover:text-[#4BC1B1] transition-colors w-full #{'line-through' if item.done}",
+              data: { turbo_stream: true } do %>
+            <%= item.description %>
+          <% end %>
+        </div>
+
+        <div class="flex items-center gap-1 shrink-0">
+          <!-- Vote button -->
+          <%= button_to vote_retro_item_path(item.retro, item),
+              method: :post,
+              class: "flex items-center gap-1 text-gray-400 hover:text-red-500 transition-colors p-1",
+              data: { turbo_stream: true } do %>
+            <svg class="w-4 h-4" fill="<%= item.vote_count > 0 ? 'currentColor' : 'none' %>" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+            <% if item.vote_count > 0 %>
+              <span class="text-xs font-medium text-red-500"><%= item.vote_count %></span>
+            <% end %>
+          <% end %>
+
+          <!-- Edit button -->
+          <button type="button"
+                  class="text-gray-400 hover:text-[#4BC1B1] transition-colors p-1"
+                  data-action="click->item#toggleEdit">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+          </button>
+
+          <!-- Done button -->
+          <%= button_to done_retro_item_path(item.retro, item),
+              method: :patch,
+              class: "text-gray-400 hover:text-green-500 transition-colors p-1 #{item.done ? 'text-green-500' : ''}",
+              data: { turbo_stream: true } do %>
+            <svg class="w-4 h-4" fill="<%= item.done ? 'currentColor' : 'none' %>" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          <% end %>
+
+          <!-- Delete button -->
+          <%= button_to retro_item_path(item.retro, item),
+              method: :delete,
+              class: "text-gray-400 hover:text-red-500 transition-colors p-1",
+              data: { turbo_stream: true, confirm: "Delete this item?" } do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit form (hidden by default) -->
+    <div data-item-target="editForm" class="hidden">
+      <%= form_with model: item, url: retro_item_path(item.retro, item),
+          method: :patch,
+          data: { turbo_stream: true, action: "turbo:submit-end->item#hideEdit" } do |f| %>
+        <div class="flex gap-2">
+          <%= f.text_area :description,
+              value: item.description,
+              class: "flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4BC1B1] focus:border-transparent resize-none text-sm",
+              rows: 2,
+              data: { item_target: "input" } %>
+          <div class="flex flex-col gap-1">
+            <%= f.submit "Save", class: "bg-[#4BC1B1] hover:bg-[#45a89b] text-white px-3 py-1 rounded text-sm transition-colors cursor-pointer" %>
+            <button type="button"
+                    class="text-gray-500 hover:text-gray-700 px-3 py-1 text-sm"
+                    data-action="click->item#toggleEdit">
+              Cancel
+            </button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -36,6 +36,7 @@ class Retro < ActiveRecord::Base
   has_many :archives, dependent: :destroy
 
   belongs_to :user, optional: true
+  belongs_to :highlighted_item, class_name: 'Item', optional: true
   enum :item_order, { time: 'time', votes: 'votes' }
 
   def self.ransackable_attributes(_auth_object = nil)

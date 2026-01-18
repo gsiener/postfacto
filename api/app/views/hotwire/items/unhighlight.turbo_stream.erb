@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "highlighted-item-panel" do %>
+  <div id="highlighted-item-panel"></div>
+<% end %>
+
+<%= turbo_stream.replace dom_id(@item) do %>
+  <%= render partial: "hotwire/items/item", locals: { item: @item } %>
+<% end %>

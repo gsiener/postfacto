@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@action_item) do %>
+  <%= render partial: "hotwire/action_items/action_item", locals: { action_item: @action_item } %>
+<% end %>

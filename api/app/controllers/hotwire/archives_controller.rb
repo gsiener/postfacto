@@ -1,0 +1,15 @@
+# frozen_string_literal: true
+
+class Hotwire::ArchivesController < Hotwire::BaseController
+  before_action :load_retro
+
+  def index
+    @archives = @retro.archives.order(created_at: :desc)
+  end
+
+  def show
+    @archive = @retro.archives.find(params[:id])
+    @items = @archive.items
+    @action_items = @archive.action_items
+  end
+end

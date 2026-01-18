@@ -1,0 +1,57 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center">
+  <div class="max-w-md w-full mx-4">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+      <!-- Header -->
+      <div class="bg-[#4BC1B1] text-white py-6 px-6 text-center">
+        <h1 class="text-2xl font-bold">Postfacto</h1>
+        <p class="text-sm opacity-90 mt-1">Enter password to access this retro</p>
+      </div>
+
+      <div class="p-6">
+        <% if @retro %>
+          <div class="text-center mb-6">
+            <h2 class="text-xl font-semibold text-gray-800"><%= @retro.name %></h2>
+          </div>
+        <% end %>
+
+        <% if flash[:alert] %>
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div class="flex items-center gap-2 text-red-800">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span class="text-sm font-medium"><%= flash[:alert] %></span>
+            </div>
+          </div>
+        <% end %>
+
+        <%= form_with url: retro_session_path(@retro), method: :post, class: "space-y-6" do |f| %>
+          <div>
+            <%= label_tag :password, "Password", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= password_field_tag :password, nil,
+                class: "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4BC1B1] focus:border-transparent",
+                placeholder: "Enter retro password",
+                required: true,
+                autofocus: true %>
+          </div>
+
+          <div>
+            <%= submit_tag "Enter Retro",
+                class: "w-full bg-[#4BC1B1] hover:bg-[#45a89b] text-white py-3 px-6 rounded-lg font-medium transition-colors cursor-pointer" %>
+          </div>
+        <% end %>
+
+        <div class="mt-6 text-center">
+          <%= link_to "Back to Retros", retros_path, class: "text-sm text-gray-500 hover:text-[#4BC1B1] transition-colors" %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="text-center mt-6">
+      <p class="text-sm text-gray-500">
+        Don't have access? Contact your retro organizer.
+      </p>
+    </div>
+  </div>
+</div>

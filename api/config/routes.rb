@@ -32,6 +32,35 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
+  # Hotwire frontend (primary)
+  root 'hotwire/retros#index'
+
+  resources :retros, param: :slug, controller: 'hotwire/retros' do
+    resource :session, controller: 'hotwire/sessions', only: [:new, :create, :destroy]
+
+    resources :items, controller: 'hotwire/items', only: [:create, :update, :destroy] do
+      member do
+        post :vote
+        post :highlight
+        delete :unhighlight
+        patch :done
+      end
+    end
+
+    resources :action_items, controller: 'hotwire/action_items', only: [:create, :update, :destroy] do
+      member do
+        patch :toggle_done
+      end
+    end
+
+    resources :archives, controller: 'hotwire/archives', only: [:index, :show]
+
+    post :archive, on: :member
+  end
+
+  get '/join/:token', to: 'hotwire/sessions#magic_link', as: :magic_link
+
+  # Legacy API (keep for backwards compatibility)
   scope '/api' do
     put '/retros/:id/archive', to: 'retros#archive'
     patch '/retros/:id/password', to: 'retros#update_password', as: :retro_update_password
@@ -58,8 +87,4 @@ Rails.application.routes.draw do
       resources :sessions, only: [:new, :create]
     end
   end
-
-  # pushstate routing
-  get '/' => 'static#home', as: 'home', constraints: { format: :html }
-  get '*url' => 'static#home', constraints: { format: :html }
 end

@@ -54,14 +54,6 @@ module RetroApp
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     config.autoload_paths << Rails.root.join('lib', 'configurations')
-    if ENV['RAILS_ENV'] != 'production' || ENV['RAILS_SERVE_STATIC_FILES'].present?
-      config.middleware.insert_after(
-        ActionDispatch::Static,
-        ActionDispatch::Static,
-        Rails.root.join('client').to_s,
-        index: config.public_file_server.index_name,
-        headers: config.public_file_server.headers || {}
-      )
-    end
+    # React client middleware removed - using Hotwire now
   end
 end

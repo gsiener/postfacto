@@ -1,0 +1,80 @@
+<div class="min-h-screen bg-gray-100">
+  <!-- Header -->
+  <header class="bg-[#4BC1B1] text-white py-4 px-6 shadow-md">
+    <div class="max-w-4xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <%= link_to retro_path(@retro), class: "text-white hover:text-gray-200" do %>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+        <% end %>
+        <h1 class="text-2xl font-bold"><%= @retro.name %> - Archives</h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto py-8 px-4">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+      <div class="p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+          <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+          </svg>
+          Past Retrospectives
+        </h2>
+
+        <% if @archives.any? %>
+          <div class="space-y-4">
+            <% @archives.each do |archive| %>
+              <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <h3 class="text-lg font-medium text-gray-800">
+                      <%= link_to archive.created_at.strftime("%B %d, %Y at %I:%M %p"),
+                          retro_archive_path(@retro, archive),
+                          class: "hover:text-[#4BC1B1] transition-colors" %>
+                    </h3>
+                    <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
+                      <span class="flex items-center gap-1">
+                        <span class="text-[#51c0b1]">&#128522;</span>
+                        <%= archive.items.count { |i| i['category'] == 'happy' } rescue 0 %> happy
+                      </span>
+                      <span class="flex items-center gap-1">
+                        <span class="text-[#fec722]">&#128528;</span>
+                        <%= archive.items.count { |i| i['category'] == 'meh' } rescue 0 %> meh
+                      </span>
+                      <span class="flex items-center gap-1">
+                        <span class="text-[#e34e40]">&#128546;</span>
+                        <%= archive.items.count { |i| i['category'] == 'sad' } rescue 0 %> sad
+                      </span>
+                      <span class="flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        </svg>
+                        <%= archive.action_items&.count || 0 %> actions
+                      </span>
+                    </div>
+                  </div>
+                  <%= link_to retro_archive_path(@retro, archive), class: "text-[#4BC1B1] hover:text-[#45a89b] transition-colors" do %>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="text-center py-12">
+            <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            <p class="text-gray-500 mb-4">No archives yet</p>
+            <p class="text-sm text-gray-400">Archives are created when you archive a retro from the settings page</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </main>
+</div>

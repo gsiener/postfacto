@@ -1,0 +1,165 @@
+<div class="min-h-screen bg-gray-100">
+  <!-- Header -->
+  <header class="bg-[#4BC1B1] text-white py-4 px-6 shadow-md">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <%= link_to retro_archives_path(@retro), class: "text-white hover:text-gray-200" do %>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+          </svg>
+        <% end %>
+        <div>
+          <h1 class="text-2xl font-bold"><%= @retro.name %></h1>
+          <p class="text-sm opacity-90">Archived on <%= @archive.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+        </div>
+      </div>
+      <span class="bg-white/20 text-white px-3 py-1 rounded-full text-sm font-medium">
+        Read Only
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto py-6 px-4">
+    <!-- Three Columns -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- Happy Column -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+        <div class="bg-[#51c0b1] text-white py-3 px-4">
+          <h2 class="text-lg font-semibold flex items-center gap-2">
+            <span>&#128522;</span> Happy
+          </h2>
+        </div>
+        <div class="p-4">
+          <div class="space-y-3">
+            <% happy_items = @archive.items&.select { |i| i['category'] == 'happy' } || [] %>
+            <% if happy_items.any? %>
+              <% happy_items.each do |item| %>
+                <div class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+                  <div class="flex items-start justify-between gap-2">
+                    <p class="text-gray-800 flex-1 <%= item['done'] ? 'line-through opacity-50' : '' %>">
+                      <%= item['description'] %>
+                    </p>
+                    <% if (item['vote_count'] || 0) > 0 %>
+                      <span class="flex items-center gap-1 text-red-500 shrink-0">
+                        <svg class="w-4 h-4" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span class="text-xs font-medium"><%= item['vote_count'] %></span>
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <p class="text-gray-400 text-center py-4 text-sm">No items</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meh Column -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+        <div class="bg-[#fec722] text-white py-3 px-4">
+          <h2 class="text-lg font-semibold flex items-center gap-2">
+            <span>&#128528;</span> Meh
+          </h2>
+        </div>
+        <div class="p-4">
+          <div class="space-y-3">
+            <% meh_items = @archive.items&.select { |i| i['category'] == 'meh' } || [] %>
+            <% if meh_items.any? %>
+              <% meh_items.each do |item| %>
+                <div class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+                  <div class="flex items-start justify-between gap-2">
+                    <p class="text-gray-800 flex-1 <%= item['done'] ? 'line-through opacity-50' : '' %>">
+                      <%= item['description'] %>
+                    </p>
+                    <% if (item['vote_count'] || 0) > 0 %>
+                      <span class="flex items-center gap-1 text-red-500 shrink-0">
+                        <svg class="w-4 h-4" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span class="text-xs font-medium"><%= item['vote_count'] %></span>
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <p class="text-gray-400 text-center py-4 text-sm">No items</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sad Column -->
+      <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+        <div class="bg-[#e34e40] text-white py-3 px-4">
+          <h2 class="text-lg font-semibold flex items-center gap-2">
+            <span>&#128546;</span> Sad
+          </h2>
+        </div>
+        <div class="p-4">
+          <div class="space-y-3">
+            <% sad_items = @archive.items&.select { |i| i['category'] == 'sad' } || [] %>
+            <% if sad_items.any? %>
+              <% sad_items.each do |item| %>
+                <div class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+                  <div class="flex items-start justify-between gap-2">
+                    <p class="text-gray-800 flex-1 <%= item['done'] ? 'line-through opacity-50' : '' %>">
+                      <%= item['description'] %>
+                    </p>
+                    <% if (item['vote_count'] || 0) > 0 %>
+                      <span class="flex items-center gap-1 text-red-500 shrink-0">
+                        <svg class="w-4 h-4" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span class="text-xs font-medium"><%= item['vote_count'] %></span>
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            <% else %>
+              <p class="text-gray-400 text-center py-4 text-sm">No items</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Items Section -->
+    <div class="bg-[#f2eee2] rounded-lg shadow-md p-6 border border-gray-200">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+        </svg>
+        Action Items
+      </h2>
+
+      <div class="space-y-2">
+        <% if @archive.action_items&.any? %>
+          <% @archive.action_items.each do |action_item| %>
+            <div class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+              <div class="flex items-center gap-3">
+                <div class="w-5 h-5 border-2 rounded flex items-center justify-center <%= action_item['done'] ? 'bg-[#4BC1B1] border-[#4BC1B1]' : 'border-gray-300' %>">
+                  <% if action_item['done'] %>
+                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  <% end %>
+                </div>
+                <span class="text-gray-800 <%= action_item['done'] ? 'line-through text-gray-500' : '' %>">
+                  <%= action_item['description'] %>
+                </span>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <p class="text-gray-400 text-center py-4 text-sm">No action items</p>
+        <% end %>
+      </div>
+    </div>
+  </main>
+</div>

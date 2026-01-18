@@ -1,0 +1,74 @@
+<%= turbo_frame_tag dom_id(action_item) do %>
+  <div class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow"
+       data-controller="action-item"
+       data-action-item-id="<%= action_item.id %>"
+       id="action-item-container-<%= action_item.id %>">
+    <div data-action-item-target="display">
+      <div class="flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 flex-1">
+          <!-- Done checkbox -->
+          <%= button_to toggle_done_retro_action_item_path(action_item.retro, action_item),
+              method: :patch,
+              class: "shrink-0",
+              data: { turbo_stream: true } do %>
+            <div class="w-5 h-5 border-2 rounded flex items-center justify-center transition-colors <%= action_item.done ? 'bg-[#4BC1B1] border-[#4BC1B1]' : 'border-gray-300 hover:border-[#4BC1B1]' %>">
+              <% if action_item.done %>
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                </svg>
+              <% end %>
+            </div>
+          <% end %>
+
+          <!-- Description -->
+          <span class="text-gray-800 <%= action_item.done ? 'line-through text-gray-500' : '' %>">
+            <%= action_item.description %>
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1 shrink-0">
+          <!-- Edit button -->
+          <button type="button"
+                  class="text-gray-400 hover:text-[#4BC1B1] transition-colors p-1"
+                  data-action="click->action-item#toggleEdit">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+          </button>
+
+          <!-- Delete button -->
+          <%= button_to retro_action_item_path(action_item.retro, action_item),
+              method: :delete,
+              class: "text-gray-400 hover:text-red-500 transition-colors p-1",
+              data: { turbo_stream: true, confirm: "Delete this action item?" } do %>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit form (hidden by default) -->
+    <div data-action-item-target="editForm" class="hidden">
+      <%= form_with model: action_item, url: retro_action_item_path(action_item.retro, action_item),
+          method: :patch,
+          data: { turbo_stream: true, action: "turbo:submit-end->action-item#hideEdit" } do |f| %>
+        <div class="flex gap-2">
+          <%= f.text_field :description,
+              value: action_item.description,
+              class: "flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4BC1B1] focus:border-transparent text-sm",
+              data: { action_item_target: "input" } %>
+          <div class="flex gap-1">
+            <%= f.submit "Save", class: "bg-[#4BC1B1] hover:bg-[#45a89b] text-white px-3 py-1 rounded text-sm transition-colors cursor-pointer" %>
+            <button type="button"
+                    class="text-gray-500 hover:text-gray-700 px-3 py-1 text-sm"
+                    data-action="click->action-item#toggleEdit">
+              Cancel
+            </button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

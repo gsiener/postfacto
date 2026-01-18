@@ -1,0 +1,116 @@
+<div class="min-h-screen bg-gray-100">
+  <!-- Header -->
+  <header class="bg-[#4BC1B1] text-white py-4 px-6 shadow-md">
+    <div class="max-w-2xl mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">
+        <%= link_to @retro.name, retro_path(@retro), class: "hover:text-gray-200 transition-colors" %>
+      </h1>
+      <%= link_to retro_path(@retro), class: "text-white hover:text-gray-200" do %>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      <% end %>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-2xl mx-auto py-8 px-4">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+      <div class="bg-[#4BC1B1] text-white py-4 px-6">
+        <h2 class="text-xl font-semibold">Retro Settings</h2>
+      </div>
+
+      <div class="p-6">
+        <%= form_with model: @retro, url: retro_path(@retro), method: :patch, class: "space-y-6" do |f| %>
+          <% if @retro.errors.any? %>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div class="flex items-center gap-2 text-red-800 font-medium mb-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Please fix the following errors:
+              </div>
+              <ul class="list-disc list-inside text-red-700 text-sm">
+                <% @retro.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div>
+            <%= f.label :name, "Retro Name", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :name,
+                class: "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4BC1B1] focus:border-transparent",
+                required: true %>
+          </div>
+
+          <div>
+            <%= f.label :slug, "URL Slug", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <div class="flex items-center">
+              <span class="text-gray-500 mr-2">/retros/</span>
+              <%= f.text_field :slug,
+                  class: "flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4BC1B1] focus:border-transparent",
+                  required: true %>
+            </div>
+          </div>
+
+          <div>
+            <%= f.label :password, "Password", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.password_field :password,
+                class: "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4BC1B1] focus:border-transparent",
+                placeholder: "Leave blank to keep current password" %>
+            <p class="mt-1 text-sm text-gray-500">Leave blank to keep the current password, or enter a new one</p>
+          </div>
+
+          <div>
+            <%= f.label :video_link, "Video Call Link", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.url_field :video_link,
+                class: "w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4BC1B1] focus:border-transparent",
+                placeholder: "https://meet.google.com/..." %>
+          </div>
+
+          <div class="flex justify-end gap-3 pt-4 border-t">
+            <%= link_to "Cancel", retro_path(@retro), class: "px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors" %>
+            <%= f.submit "Save Changes", class: "bg-[#4BC1B1] hover:bg-[#45a89b] text-white px-6 py-2 rounded-lg font-medium transition-colors cursor-pointer" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="mt-8 bg-white rounded-lg shadow-md overflow-hidden border border-red-200">
+      <div class="bg-red-50 text-red-800 py-4 px-6 border-b border-red-200">
+        <h2 class="text-xl font-semibold">Danger Zone</h2>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <!-- Archive Retro -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-medium text-gray-800">Archive this retro</h3>
+            <p class="text-sm text-gray-500">Save current items to archives and clear the board</p>
+          </div>
+          <%= button_to "Archive", archive_retro_path(@retro),
+              method: :post,
+              class: "bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition-colors",
+              data: { confirm: "Are you sure you want to archive this retro? All items will be moved to archives." } %>
+        </div>
+
+        <hr class="border-gray-200">
+
+        <!-- Delete Retro -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-medium text-gray-800">Delete this retro</h3>
+            <p class="text-sm text-gray-500">Permanently delete this retro and all its data</p>
+          </div>
+          <%= button_to "Delete", retro_path(@retro),
+              method: :delete,
+              class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors",
+              data: { confirm: "Are you sure you want to delete this retro? This action cannot be undone." } %>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

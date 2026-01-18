@@ -50,6 +50,13 @@ gem 'sassc-rails'
 gem 'uglifier'
 gem 'jwt'
 
+# Hotwire stack
+gem 'turbo-rails'
+gem 'stimulus-rails'
+gem 'tailwindcss-rails'
+gem 'importmap-rails'
+gem 'sprockets-rails'
+
 group :development, :test do
   gem 'dotenv-rails'
   gem 'pry'
