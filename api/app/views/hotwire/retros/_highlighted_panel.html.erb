@@ -1,0 +1,25 @@
+<div id="highlighted-item-panel" class="bg-white border-b-4 border-[#4BC1B1] shadow-lg p-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <span class="text-3xl">
+          <% case item.category %>
+          <% when 'happy' %>
+            <span class="text-[#51c0b1]">&#128522;</span>
+          <% when 'meh' %>
+            <span class="text-[#fec722]">&#128528;</span>
+          <% when 'sad' %>
+            <span class="text-[#e34e40]">&#128546;</span>
+          <% end %>
+        </span>
+        <p class="text-xl font-medium text-gray-800"><%= item.description %></p>
+      </div>
+      <%= button_to unhighlight_retro_item_path(retro, item),
+          method: :delete,
+          class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors",
+          data: { turbo_stream: true } do %>
+        Done Discussing
+      <% end %>
+    </div>
+  </div>
+</div>

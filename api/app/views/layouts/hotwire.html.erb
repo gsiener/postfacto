@@ -6,11 +6,18 @@
     <title><%= content_for(:title) || "Postfacto" %></title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <%= favicon_link_tag "favicon.ico" %>
+    <%= favicon_link_tag "/favicon.ico" %>
 
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= action_cable_meta_tag %>
+    <script src="https://cdn.jsdelivr.net/npm/@rails/actioncable@7.0.8/app/assets/javascripts/actioncable.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/dist/turbo.min.js"></script>
+    <script>
+      // Create ActionCable consumer using the meta tag URL
+      const cableUrl = document.querySelector('meta[name="action-cable-url"]').content
+      window.App = { cable: ActionCable.createConsumer(cableUrl) }
+    </script>
     <script type="module">
-      import * as Turbo from 'https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/dist/turbo.es2017-esm.min.js'
       import { Application, Controller } from 'https://cdn.jsdelivr.net/npm/@hotwired/stimulus@3.2.2/dist/stimulus.js'
 
       window.Stimulus = Application.start()

@@ -32,6 +32,9 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
+  # ActionCable for Turbo Streams real-time updates
+  mount ActionCable.server => '/cable'
+
   # Hotwire frontend (primary)
   root 'hotwire/retros#index'
 

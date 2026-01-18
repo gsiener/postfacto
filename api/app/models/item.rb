@@ -39,6 +39,14 @@ class Item < ActiveRecord::Base
   validates :description, presence: true
   validates :category, presence: true
 
+  # Broadcast real-time updates via Turbo Streams to the retro
+  broadcasts_to :retro, inserts_by: :prepend, target: ->(item) { "#{item.category}-items" }
+
+  # Override to_partial_path to point to the Hotwire partial
+  def to_partial_path
+    "hotwire/items/item"
+  end
+
   # Query scopes for reducing N+1 queries and improving code organization
   scope :active, -> { where(archived: false) }
   scope :for_discussion, -> { active.where(done: false) }
