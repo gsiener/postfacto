@@ -53,3 +53,20 @@ jobs:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postfacto_test
         run: bundle exec rake
+
+  # Track Render auto-deploy in GitHub Deployments
+  deploy:
+    name: Deploy to Render
+    needs: [test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    environment:
+      name: production
+      url: https://expostfacto.onrender.com
+    steps:
+      - name: Mark deployment
+        run: |
+          echo "✅ Tests passed - Render will auto-deploy from master branch"
+          echo "🚀 Deployment tracked in GitHub Environment: production"
+          echo "🔗 Service URL: https://expostfacto.onrender.com"
