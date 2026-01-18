@@ -52,7 +52,8 @@ Rails.application.configure do
   config.public_file_server.enabled = ENV['RAILS_SERVE_STATIC_FILES'].present?
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = :uglifier
+  # Enable harmony mode to support ES6 syntax
+  config.assets.js_compressor = Uglifier.new(harmony: true)
   # Disable Sass CSS compressor to avoid processing pre-built Tailwind CSS
   # Tailwind v4 uses modern CSS syntax (e.g., rgb(from red r g b)) that sassc cannot parse
   config.assets.css_compressor = nil
