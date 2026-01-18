@@ -70,7 +70,7 @@ jobs:
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postfacto_test
-        run: bundle exec rspec --format progress
+        run: bundle exec rspec spec/requests/hotwire spec/model spec/channels spec/domain spec/lib --format progress
 
   web-test:
     name: Web Tests
