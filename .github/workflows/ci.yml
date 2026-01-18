@@ -54,19 +54,25 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/postfacto_test
         run: bundle exec rake
 
-  # Track Render auto-deploy in GitHub Deployments
+  # Deploy to Render only after tests pass
   deploy:
     name: Deploy to Render
     needs: [test]
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     environment:
       name: production
       url: https://expostfacto.onrender.com
     steps:
-      - name: Mark deployment
+      - name: Trigger Render deployment
         run: |
-          echo "✅ Tests passed - Render will auto-deploy from master branch"
-          echo "🚀 Deployment tracked in GitHub Environment: production"
-          echo "🔗 Service URL: https://expostfacto.onrender.com"
+          echo "🚀 Triggering Render deployment after tests passed..."
+          response=$(curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}" -w "\n%{http_code}" -s)
+          http_code=$(echo "$response" | tail -n1)
+          if [ "$http_code" = "200" ] || [ "$http_code" = "201" ]; then
+            echo "✅ Deployment triggered successfully"
+          else
+            echo "❌ Failed to trigger deployment (HTTP $http_code)"
+            exit 1
+          fi
