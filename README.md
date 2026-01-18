@@ -1,7 +1,9 @@
-# Postfacto
-[![Build Status](https://github.com/pivotal/postfacto/actions/workflows/push.yml/badge.svg)](https://github.com/pivotal/postfacto/actions/workflows/push.yml)
+# Expostfacto
+[![CI/CD](https://github.com/gsiener/expostfacto/actions/workflows/ci.yml/badge.svg)](https://github.com/gsiener/expostfacto/actions/workflows/ci.yml)
 
-Postfacto helps teams run great [retrospectives](https://content.pivotal.io/blog/how-to-run-a-really-good-retrospective) remotely.
+Expostfacto is a modernized fork of [VMware's Postfacto](https://github.com/vmware-archive/postfacto), migrated to Rails 8 with Hotwire. It helps teams run great [retrospectives](https://content.pivotal.io/blog/how-to-run-a-really-good-retrospective) remotely.
+
+> **Name Credit**: The name "Expostfacto" was suggested by [@flavorjones](https://github.com/flavorjones) - a clever play on "ex post facto" meaning "from a thing done afterward."
 
 <p align="center">
   <img width="700px" src="https://github.com/pivotal/postfacto/blob/master/media/sample-retro.gif?raw=true" />
@@ -26,26 +28,38 @@ Participants can add and vote on items from their mobile devices, so it is easy 
 Retros are designed to help teams improve and that's hard to do without taking action. Postfacto tracks your team's actions to help you keep on top of them.
 
 
+## What's New in Expostfacto
+
+This fork modernizes the original Postfacto codebase:
+
+- 🚀 **Rails 8** - Upgraded from Rails 6.1
+- ⚡ **Hotwire** - Replaced React/Redux frontend with Turbo and Stimulus
+- 🎨 **Tailwind CSS v4** - Modern styling framework
+- 🗄️ **PostgreSQL** - Production-ready database
+- 📦 **Ruby 3.3** - Latest stable Ruby (with Ruby 4.0 support planned)
+
 ## Deployment
 
-Postfacto is a self hosted product, this makes it easier for you to stay in control of your data.
+Expostfacto is designed for easy self-hosting on modern platforms:
 
-We aim to make it easy to deploy to as many locations as possible, and currently support the following platforms:
+- **[Render](https://render.com/)** (recommended) - Deploy with `render.yaml` configuration
+- Includes CI/CD via GitHub Actions
+- PostgreSQL database included
+- Free tier available
 
-* Tanzu Kubernetes Grid
-* Tanzu Application Service
-* Cloud Foundry
-* Heroku
-
-Deployment instructions can be found [here](deployment/README.md).
-
-If the platforms above don't work for you; you may be able to find a way to run Postfacto yourself by following the Contributing Guide.
+For deployment instructions and configuration, see the [render.yaml](render.yaml) file in the repository.
 
 ## Contributing
 
 See the [Contributing Guide](CONTRIBUTING.md) for more info.
 
+## Credits
+
+This project is a fork of [vmware-archive/postfacto](https://github.com/vmware-archive/postfacto), originally created by Pivotal Labs and later maintained by VMware. We're grateful to the original authors and contributors for creating such a valuable tool for agile teams.
+
+Special thanks to [@flavorjones](https://github.com/flavorjones) for suggesting the name "Expostfacto"!
+
 ## License
 
-Postfacto is licensed under the **GNU Affero General Public License** (often referred to as **AGPL-3.0**). The full text 
-of the license is available [here](LICENSE.md). It's important to note that this license allows you to deploy an instance of Postfacto for private, public or internal use.
+Expostfacto is licensed under the **GNU Affero General Public License** (often referred to as **AGPL-3.0**). The full text
+of the license is available [here](LICENSE.md). It's important to note that this license allows you to deploy an instance of Expostfacto for private, public or internal use.
