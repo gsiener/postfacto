@@ -39,6 +39,7 @@ Rails.application.routes.draw do
       member do
         post :archive
       end
+      resources :archives, only: [:index, :show]
       resources :items, only: [:create, :update, :destroy] do
         member do
           post :vote

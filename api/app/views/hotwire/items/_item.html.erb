@@ -1,60 +1,50 @@
-<%# locals: (item:, retro:) %>
+<%# locals: (item:, retro:, category: nil) %>
+<% category ||= item.category %>
+<% is_highlighted = retro.highlighted_item_id == item.id %>
+<% card_bg = case category.to_s
+   when 'happy' then '#e8f6f3'
+   when 'meh' then '#fef9e7'
+   when 'sad' then '#fdf2f2'
+   else 'white'
+   end %>
 <%= turbo_frame_tag dom_id(item) do %>
-  <div class="bg-white rounded-lg shadow-md border border-gray-200 p-3 <%= 'ring-2 ring-amber-400' if retro.highlighted_item_id == item.id %> <%= 'opacity-50' if item.done? %>"
+  <div class="rounded-md mb-2 <%= 'opacity-50' if item.done? %>"
+       style="background-color: <%= card_bg %>;"
        data-controller="item"
        id="item-card-<%= item.id %>">
 
     <%# Display Mode %>
-    <div data-item-target="display">
-      <div class="flex items-start">
-        <%# Vote button - Heart style like original %>
+    <div data-item-target="display" class="px-4 py-3">
+      <div class="flex items-center">
+        <%# Vote button - Heart outline style %>
         <%= button_to vote_retro_item_path(retro, item),
             method: :post,
-            class: 'flex-shrink-0 mr-3 text-gray-400 hover:text-red-500 transition-colors',
+            class: 'flex-shrink-0 mr-3 hover:scale-105 transition-transform',
             data: { controller: 'vote', action: 'click->vote#vote' } do %>
-          <div class="flex flex-col items-center">
-            <span class="text-lg">❤️</span>
-            <span class="text-xs text-gray-600" data-vote-target="count"><%= item.vote_count %></span>
-          </div>
+          <span class="text-gray-400 hover:text-red-400" style="font-size: 18px;" data-vote-target="count">♡</span>
         <% end %>
 
-        <%# Item text %>
-        <p class="flex-1 text-gray-800 text-sm <%= 'line-through' if item.done? %>"><%= item.description %></p>
-
-        <%# Action buttons %>
-        <div class="flex-shrink-0 ml-2 flex items-center space-x-1">
-          <% unless item.done? %>
-            <%# Discuss Button %>
-            <%= button_to highlight_retro_item_path(retro, item),
-                method: :post,
-                class: 'p-1 text-gray-400 hover:text-amber-500 transition-colors',
-                title: 'Discuss' do %>
-              💬
-            <% end %>
+        <%# Item text - clickable to highlight for discussion %>
+        <% if item.done? %>
+          <p class="flex-1 text-gray-600 line-through"><%= item.description %></p>
+        <% else %>
+          <%= button_to highlight_retro_item_path(retro, item),
+              method: :post,
+              class: 'flex-1 text-left text-gray-800 hover:text-gray-600 cursor-pointer',
+              title: 'Click to discuss' do %>
+            <%= item.description %>
           <% end %>
+        <% end %>
 
-          <%# Edit Button %>
-          <button type="button"
-                  class="p-1 text-gray-400 hover:text-blue-500 transition-colors"
-                  data-action="click->item#edit"
-                  title="Edit">
-            ✏️
-          </button>
-
-          <%# Delete Button %>
-          <%= button_to retro_item_path(retro, item),
-              method: :delete,
-              data: { turbo_confirm: 'Delete this item?' },
-              class: 'p-1 text-gray-400 hover:text-red-500 transition-colors',
-              title: 'Delete' do %>
-            🗑️
-          <% end %>
-        </div>
+        <%# Edit button on right - gray pencil %>
+        <button type="button"
+                class="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-600 transition-colors"
+                data-action="click->item#edit"
+                title="Edit"
+                style="font-size: 14px;">
+          ✎
+        </button>
       </div>
-
-      <% if item.done? %>
-        <div class="mt-1 text-xs text-green-600">✓ Done</div>
-      <% end %>
     </div>
 
     <%# Edit Mode %>

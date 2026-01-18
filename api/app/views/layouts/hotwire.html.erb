@@ -7,6 +7,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <link rel="icon" type="image/png" href="/favicon.png">
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "actiontext", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -27,13 +28,6 @@
       <% end %>
 
       <%= yield %>
-
-      <footer class="mt-auto py-4 text-center text-sm text-gray-500">
-        <p>
-          Postfacto is open source.
-          <a href="https://github.com/pivotal/postfacto" class="text-blue-600 hover:underline" target="_blank">View on GitHub</a>
-        </p>
-      </footer>
     </main>
   </body>
 </html>

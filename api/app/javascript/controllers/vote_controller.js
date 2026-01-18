@@ -9,14 +9,9 @@ export default class extends Controller {
   }
 
   vote(event) {
-    event.preventDefault()
+    // Don't prevent default - let the form submit via Turbo
 
-    // Disable button during request
-    if (this.hasButtonTarget) {
-      this.buttonTarget.disabled = true
-    }
-
-    // Add animation class
+    // Add animation class for visual feedback
     if (this.hasCountTarget) {
       this.countTarget.classList.add("animate-bounce")
       setTimeout(() => {

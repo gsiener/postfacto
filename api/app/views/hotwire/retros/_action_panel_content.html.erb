@@ -1,19 +1,45 @@
 <%# locals: (retro:, action_items:) %>
-<div class="flex flex-col md:flex-row md:items-start md:space-x-6">
+<%
+  # Group action items by date
+  today = Date.today
+  one_week_ago = today - 7
+  grouped = action_items.group_by do |item|
+    item_date = item.created_at.to_date
+    if item_date == today
+      "Today (#{today.strftime('%B %d, %Y')})"
+    elsif item_date > one_week_ago
+      'Past Week'
+    else
+      'Older'
+    end
+  end
+  # Sort groups: Today first, Past Week, then Older
+  group_order = ["Today (#{today.strftime('%B %d, %Y')})", 'Past Week', 'Older']
+  sorted_groups = group_order.map { |label| [label, grouped[label] || []] }.reject { |_, items| items.empty? }
+%>
+<div>
   <%# New Action Item Form %>
-  <div id="new-action-item-form" class="mb-4 md:mb-0 md:w-80">
-    <%= form_with model: ActionItem.new, url: retro_action_items_path(retro), class: 'flex space-x-2', data: { turbo_stream: true } do |f| %>
+  <div id="new-action-item-form" class="max-w-md mx-auto mb-8">
+    <%= form_with model: ActionItem.new, url: retro_action_items_path(retro), data: { turbo_stream: true } do |f| %>
       <%= f.text_field :description,
-          placeholder: "Add an action...",
-          class: 'flex-1 block w-full rounded border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm py-2 px-3',
+          placeholder: "Add an action item",
+          class: 'block w-full rounded-md border-0 text-sm py-3 px-4 placeholder-white/70',
+          style: 'background-color: #8b9298; color: white;',
           autocomplete: 'off' %>
-      <%= f.submit 'Add',
-          class: 'px-4 py-2 text-sm font-medium rounded text-white bg-purple-500 hover:bg-purple-600 shadow-sm transition-colors' %>
     <% end %>
   </div>
 
-  <%# Action Items List - Horizontal layout %>
-  <div id="action-items" class="flex-1 flex flex-wrap gap-2">
-    <%= render partial: 'hotwire/action_items/action_item', collection: action_items, as: :action_item, locals: { retro: retro } %>
+  <%# Action Items List - Three columns with horizontal flow %>
+  <div id="action-items" class="grid grid-cols-3 gap-6">
+    <% group_order.each do |date_label| %>
+      <div>
+        <h3 class="text-sm text-gray-600 mb-3"><%= date_label %></h3>
+        <div class="flex flex-wrap gap-2">
+          <% (grouped[date_label] || []).each do |action_item| %>
+            <%= render 'hotwire/action_items/action_item', action_item: action_item, retro: retro %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>

@@ -1,6 +1,7 @@
 <%# locals: (action_item:, retro:) %>
 <%= turbo_frame_tag dom_id(action_item) do %>
-  <div class="inline-flex items-center bg-white rounded-lg shadow-md border border-gray-200 px-3 py-2 <%= 'opacity-50' if action_item.done? %>"
+  <div class="inline-flex items-center bg-white rounded px-2 py-1.5"
+       style="box-shadow: 0 1px 2px rgba(0,0,0,0.08);"
        data-controller="item"
        id="action-item-card-<%= action_item.id %>">
 
@@ -8,7 +9,7 @@
     <%= button_to toggle_done_retro_action_item_path(retro, action_item),
         method: :patch,
         class: 'flex-shrink-0 mr-2' do %>
-      <div class="w-4 h-4 rounded border-2 <%= action_item.done? ? 'bg-purple-500 border-purple-500' : 'border-gray-300 hover:border-purple-400' %> flex items-center justify-center transition-colors">
+      <div class="w-4 h-4 rounded border <%= action_item.done? ? 'bg-teal-500 border-teal-500' : 'border-gray-300 hover:border-teal-400' %> flex items-center justify-center transition-colors">
         <% if action_item.done? %>
           <span class="text-white text-xs">✓</span>
         <% end %>
@@ -17,44 +18,33 @@
 
     <%# Display Mode %>
     <div data-item-target="display" class="flex items-center">
-      <span class="text-sm text-gray-800 <%= 'line-through text-gray-400' if action_item.done? %> mr-2">
+      <span class="text-sm text-gray-700 <%= 'line-through text-gray-400' if action_item.done? %>">
         <%= action_item.description %>
       </span>
 
-      <%# Action buttons %>
-      <div class="flex items-center space-x-1">
-        <button type="button"
-                class="p-1 text-gray-400 hover:text-blue-500 transition-colors text-xs"
-                data-action="click->item#edit"
-                title="Edit">
-          ✏️
-        </button>
-
-        <%= button_to retro_action_item_path(retro, action_item),
-            method: :delete,
-            data: { turbo_confirm: 'Delete this action item?' },
-            class: 'p-1 text-gray-400 hover:text-red-500 transition-colors text-xs',
-            title: 'Delete' do %>
-          🗑️
-        <% end %>
-      </div>
+      <%# Edit button %>
+      <button type="button"
+              class="flex-shrink-0 ml-2 text-gray-300 hover:text-gray-500 transition-colors text-xs"
+              data-action="click->item#edit"
+              title="Edit">
+        ✏️
+      </button>
     </div>
 
     <%# Edit Mode %>
-    <div data-item-target="form" class="hidden">
+    <div data-item-target="form" class="hidden flex-1">
       <%= form_with model: action_item, url: retro_action_item_path(retro, action_item), method: :patch, data: { action: 'keydown->item#keydown' } do |f| %>
-        <div class="flex space-x-2">
+        <div class="flex items-center space-x-2">
           <%= f.text_field :description,
               value: action_item.description,
               data: { item_target: 'input' },
-              class: 'block w-full rounded border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 text-sm' %>
+              class: 'flex-1 block w-full rounded border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 text-sm py-1.5' %>
           <button type="button"
-                  class="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded"
-                  data-action="click->item#cancel">
+                  class="text-gray-400 hover:text-gray-600"
+                  data-action="click->item#cancel"
+                  title="Cancel">
             ✕
           </button>
-          <%= f.submit '✓',
-              class: 'px-2 py-1 text-xs text-white bg-purple-500 hover:bg-purple-600 rounded' %>
         </div>
       <% end %>
     </div>

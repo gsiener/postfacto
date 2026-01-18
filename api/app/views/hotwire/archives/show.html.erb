@@ -1,0 +1,94 @@
+<% content_for(:title) { "Archive - #{@archive.created_at.strftime('%B %d, %Y')}" } %>
+
+<div class="min-h-screen bg-gray-50">
+  <header class="bg-gray-100 border-b border-gray-200">
+    <div class="max-w-full mx-auto px-4 py-3">
+      <div class="flex items-center justify-between">
+        <%= link_to retro_archives_path(@retro), class: 'text-gray-600 hover:text-gray-800' do %>
+          &larr; Back to Archives
+        <% end %>
+        <h1 class="text-xl font-semibold text-gray-700">
+          <%= @retro.name %> - <%= @archive.created_at.strftime('%B %d, %Y') %>
+        </h1>
+        <div class="w-32"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 overflow-hidden">
+    <%# Three Column Layout %>
+    <div class="grid grid-cols-1 md:grid-cols-3 h-full">
+      <% %w[happy meh sad].each do |category| %>
+        <%
+          header_color = case category
+            when 'happy' then 'bg-green-500'
+            when 'meh' then 'bg-yellow-500'
+            when 'sad' then 'bg-red-400'
+          end
+          emoji = case category
+            when 'happy' then '😊'
+            when 'meh' then '😐'
+            when 'sad' then '😢'
+          end
+          card_style = case category
+            when 'happy' then 'background-color: #a8e6cf;'
+            when 'meh' then 'background-color: #ffeaa7;'
+            when 'sad' then 'background-color: #fab1a0;'
+          end
+        %>
+        <div class="flex flex-col border-r border-gray-200 last:border-r-0">
+          <%# Column Header %>
+          <div class="<%= header_color %> px-4 py-3 text-center">
+            <span class="text-lg mr-2"><%= emoji %></span>
+            <span class="text-white font-medium"><%= category.capitalize %></span>
+          </div>
+
+          <%# Items %>
+          <div class="flex-1 p-4 space-y-2 overflow-y-auto bg-white">
+            <% @items.select { |i| i.category == category }.each do |item| %>
+              <div class="rounded-lg shadow-sm p-3 <%= 'opacity-50' if item.done? %>" style="<%= card_style %>">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 mr-3">
+                    <div class="flex flex-col items-center">
+                      <span class="text-lg">❤️</span>
+                      <span class="text-xs text-gray-600"><%= item.vote_count %></span>
+                    </div>
+                  </div>
+                  <p class="flex-1 text-gray-800 <%= 'line-through' if item.done? %>"><%= item.description %></p>
+                  <% if item.done? %>
+                    <span class="text-green-600 ml-2">✓</span>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Action Items %>
+    <div class="border-t border-gray-200 bg-white">
+      <div class="text-center py-3 border-b border-gray-200">
+        <span class="text-gray-600 font-medium">Action Items</span>
+      </div>
+      <div class="p-4 max-w-4xl mx-auto">
+        <% if @action_items.any? %>
+          <div class="flex flex-wrap gap-2">
+            <% @action_items.each do |action_item| %>
+              <div class="bg-white border border-gray-200 rounded-lg px-3 py-2 flex items-center space-x-2">
+                <span class="<%= action_item.done? ? 'text-green-600' : 'text-gray-400' %>">
+                  <%= action_item.done? ? '✓' : '○' %>
+                </span>
+                <span class="<%= 'line-through text-gray-400' if action_item.done? %>">
+                  <%= action_item.description %>
+                </span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-400 text-center">No action items in this archive.</p>
+        <% end %>
+      </div>
+    </div>
+  </main>
+</div>

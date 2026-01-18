@@ -14,5 +14,5 @@
 
 <%# Items List %>
 <div id="<%= category %>-items" class="space-y-2">
-  <%= render partial: 'hotwire/items/item', collection: items, as: :item, locals: { retro: retro } %>
+  <%= render partial: 'hotwire/items/item', collection: items, as: :item, locals: { retro: retro, category: category } %>
 </div>

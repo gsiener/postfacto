@@ -1,0 +1,45 @@
+<% content_for(:title) { "Archives - #{@retro.name}" } %>
+
+<div class="min-h-screen bg-gray-50">
+  <header class="bg-gray-100 border-b border-gray-200">
+    <div class="max-w-4xl mx-auto px-4 py-3">
+      <div class="flex items-center justify-between">
+        <%= link_to retro_path(@retro), class: 'text-gray-600 hover:text-gray-800' do %>
+          &larr; Back to Retro
+        <% end %>
+        <h1 class="text-xl font-semibold text-gray-700">Archives - <%= @retro.name %></h1>
+        <div class="w-24"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <% if @archives.any? %>
+      <div class="space-y-4">
+        <% @archives.each do |archive| %>
+          <%= link_to retro_archive_path(@retro, archive), class: 'block bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow' do %>
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-medium text-gray-800">
+                  <%= archive.created_at.strftime('%B %d, %Y') %>
+                </h2>
+                <p class="text-sm text-gray-500">
+                  <%= archive.created_at.strftime('%I:%M %p') %>
+                </p>
+              </div>
+              <div class="text-sm text-gray-500">
+                <%= pluralize(archive.items.count, 'item') %>,
+                <%= pluralize(archive.action_items.count, 'action item') %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-12">
+        <p class="text-gray-500 text-lg">No archives yet.</p>
+        <p class="text-gray-400 mt-2">Archives are created when you archive the current retro.</p>
+      </div>
+    <% end %>
+  </main>
+</div>
