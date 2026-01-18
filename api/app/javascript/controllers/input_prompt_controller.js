@@ -3,6 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 // Handles input focus/blur to show/hide prompt and change styling
 export default class extends Controller {
   static targets = ["prompt", "input"]
+  static values = { inputBg: { type: String, default: '#e0f2f1' } }
 
   focus() {
     // Hide the prompt box
@@ -25,12 +26,8 @@ export default class extends Controller {
       }
       // Restore tinted background and smaller size
       this.inputTarget.style.minHeight = '44px'
-      // Get the original background color from inline style or use default
-      const category = this.inputTarget.closest('form')?.querySelector('[name*="category"]')?.value
-      let bgColor = '#e0f2f1' // teal tint
-      if (category === 'meh') bgColor = '#fef9e7'
-      if (category === 'sad') bgColor = '#fce4e4'
-      this.inputTarget.style.backgroundColor = bgColor
+      // Use the input background color from data attribute
+      this.inputTarget.style.backgroundColor = this.inputBgValue
     }
   }
 }

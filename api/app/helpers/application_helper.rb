@@ -98,4 +98,19 @@ module ApplicationHelper
       'bg-gray-500 hover:bg-gray-600'
     end
   end
+
+  # Returns a hash of all color values for a category
+  # Used to centralize color definitions across views and JavaScript
+  def category_colors(category)
+    case category.to_s
+    when 'happy'
+      { bg: '#4ecdc4', input_bg: '#e0f2f1', card_bg: '#e8f6f3', prompt_bg: '#3dbdb5' }
+    when 'meh'
+      { bg: '#f5c242', input_bg: '#fef9e7', card_bg: '#fef9e7', prompt_bg: '#d4a017' }
+    when 'sad'
+      { bg: '#e74c3c', input_bg: '#fce4e4', card_bg: '#fdf2f2', prompt_bg: '#c0392b' }
+    else
+      { bg: 'white', input_bg: 'white', card_bg: 'white', prompt_bg: '#666' }
+    end
+  end
 end

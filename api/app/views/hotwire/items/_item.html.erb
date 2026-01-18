@@ -1,15 +1,10 @@
 <%# locals: (item:, retro:, category: nil) %>
 <% category ||= item.category %>
 <% is_highlighted = retro.highlighted_item_id == item.id %>
-<% card_bg = case category.to_s
-   when 'happy' then '#e8f6f3'
-   when 'meh' then '#fef9e7'
-   when 'sad' then '#fdf2f2'
-   else 'white'
-   end %>
+<% colors = category_colors(category) %>
 <%= turbo_frame_tag dom_id(item) do %>
   <div class="rounded-md mb-2 <%= 'opacity-50' if item.done? %>"
-       style="background-color: <%= card_bg %>;"
+       style="background-color: <%= colors[:card_bg] %>;"
        data-controller="item"
        id="item-card-<%= item.id %>">
 

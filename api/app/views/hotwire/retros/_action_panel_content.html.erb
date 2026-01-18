@@ -1,22 +1,7 @@
 <%# locals: (retro:, action_items:) %>
-<%
-  # Group action items by date
-  today = Date.today
-  one_week_ago = today - 7
-  grouped = action_items.group_by do |item|
-    item_date = item.created_at.to_date
-    if item_date == today
-      "Today (#{today.strftime('%B %d, %Y')})"
-    elsif item_date > one_week_ago
-      'Past Week'
-    else
-      'Older'
-    end
-  end
-  # Sort groups: Today first, Past Week, then Older
-  group_order = ["Today (#{today.strftime('%B %d, %Y')})", 'Past Week', 'Older']
-  sorted_groups = group_order.map { |label| [label, grouped[label] || []] }.reject { |_, items| items.empty? }
-%>
+<% date_groups = group_action_items_by_date(action_items) %>
+<% grouped = date_groups[:grouped] %>
+<% group_order = date_groups[:group_order] %>
 <div>
   <%# New Action Item Form %>
   <div id="new-action-item-form" class="max-w-md mx-auto mb-8">

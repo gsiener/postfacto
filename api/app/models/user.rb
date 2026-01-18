@@ -29,15 +29,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 class User < ActiveRecord::Base
+  include Ransackable
+
   has_many :retros
   validates_uniqueness_of :email
   validates_format_of :email, with: Devise.email_regexp
 
-  def self.ransackable_attributes(_auth_object = nil)
-    %w[id email name company_name created_at updated_at]
-  end
-
-  def self.ransackable_associations(_auth_object = nil)
-    %w[retros]
-  end
+  ransackable attributes: %w[id email name company_name created_at updated_at],
+              associations: %w[retros]
 end

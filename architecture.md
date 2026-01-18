@@ -1,0 +1,436 @@
+# Postfacto Architecture
+
+## System Overview
+
+Postfacto is a retrospective collaboration tool built with Rails 8.x and Hotwire (Turbo + Stimulus). It enables distributed teams to run agile retrospectives remotely with real-time collaboration.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              CLIENT BROWSERS                                 │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│  │  Browser 1  │  │  Browser 2  │  │  Browser 3  │  │  Browser N  │        │
+│  │  (Turbo +   │  │  (Turbo +   │  │  (Turbo +   │  │  (Turbo +   │        │
+│  │  Stimulus)  │  │  Stimulus)  │  │  Stimulus)  │  │  Stimulus)  │        │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘        │
+│         │                │                │                │                │
+│         └────────────────┴────────────────┴────────────────┘                │
+│                                   │                                          │
+│                          WebSocket (Turbo Streams)                          │
+│                          HTTP (Turbo Drive)                                 │
+└───────────────────────────────────┬─────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            RAILS APPLICATION                                 │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                        ROUTING LAYER                                 │   │
+│  │  routes.rb → /retros, /retros/:slug/items, /retros/:slug/login      │   │
+│  └─────────────────────────────────┬───────────────────────────────────┘   │
+│                                    │                                         │
+│  ┌─────────────────────────────────▼───────────────────────────────────┐   │
+│  │                      CONTROLLER LAYER                                │   │
+│  │                                                                      │   │
+│  │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐  │   │
+│  │  │ RetrosController │  │ ItemsController  │  │ActionItemsCtrl   │  │   │
+│  │  │  - index         │  │  - create        │  │  - create        │  │   │
+│  │  │  - show          │  │  - update        │  │  - update        │  │   │
+│  │  │  - create        │  │  - destroy       │  │  - destroy       │  │   │
+│  │  │  - update        │  │  - vote          │  │  - toggle_done   │  │   │
+│  │  │  - archive       │  │  - highlight     │  │                  │  │   │
+│  │  └──────────────────┘  │  - done          │  └──────────────────┘  │   │
+│  │                        └──────────────────┘                         │   │
+│  │  ┌──────────────────┐  ┌──────────────────┐                        │   │
+│  │  │SessionsController│  │ArchivesController│                        │   │
+│  │  │  - login         │  │  - index         │                        │   │
+│  │  │  - logout        │  │  - show          │                        │   │
+│  │  │  - magic_link    │  │                  │                        │   │
+│  │  └──────────────────┘  └──────────────────┘                        │   │
+│  └─────────────────────────────────┬───────────────────────────────────┘   │
+│                                    │                                         │
+│  ┌─────────────────────────────────▼───────────────────────────────────┐   │
+│  │                        MODEL LAYER                                   │   │
+│  │                                                                      │   │
+│  │  ┌────────────┐     ┌────────────┐     ┌────────────┐              │   │
+│  │  │   Retro    │────<│    Item    │     │ ActionItem │              │   │
+│  │  │            │     │            │     │            │              │   │
+│  │  │ - slug     │     │ - category │     │ - done     │              │   │
+│  │  │ - password │     │ - vote_cnt │     │ - archived │              │   │
+│  │  │ - is_priv  │     │ - done     │     │            │              │   │
+│  │  └─────┬──────┘     └────────────┘     └────────────┘              │   │
+│  │        │                                                            │   │
+│  │        │            ┌────────────┐     ┌────────────┐              │   │
+│  │        └───────────>│  Archive   │     │    User    │              │   │
+│  │                     │            │     │            │              │   │
+│  │                     │ - items    │     │ - email    │              │   │
+│  │                     │ - actions  │     │ - name     │              │   │
+│  │                     └────────────┘     └────────────┘              │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                     DOMAIN & SERVICES                                │   │
+│  │                                                                      │   │
+│  │  ┌────────────────────┐     ┌──────────────────────────┐           │   │
+│  │  │  RetroFacilitator  │     │  RetroArchiveService     │           │   │
+│  │  │                    │     │                          │           │   │
+│  │  │  Rule Chain:       │     │  - Create archive        │           │   │
+│  │  │  1. HappyMehSad    │     │  - Mark items archived   │           │   │
+│  │  │  2. OrderByVotes   │     │  - Send email (optional) │           │   │
+│  │  │  3. EndWithHappy   │     │                          │           │   │
+│  │  │  4. NoDoneItems    │     │                          │           │   │
+│  │  └────────────────────┘     └──────────────────────────┘           │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                     REAL-TIME (TURBO STREAMS)                        │   │
+│  │                                                                      │   │
+│  │  Model Callbacks (after_commit) ───> broadcast_append_to            │   │
+│  │                                  ───> broadcast_replace_to           │   │
+│  │                                  ───> broadcast_remove_to            │   │
+│  │                                            │                         │   │
+│  │                                            ▼                         │   │
+│  │                            ActionCable WebSocket Connection          │   │
+│  │                                            │                         │   │
+│  │                                            ▼                         │   │
+│  │                            Turbo Stream HTML Updates                 │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              DATABASE                                        │
+│                                                                              │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │  SQLite (Development) / PostgreSQL (Production)                      │   │
+│  │                                                                      │   │
+│  │  Tables:                                                             │   │
+│  │  ├── retros (slug PK, user_id FK, encrypted_password, join_token)   │   │
+│  │  ├── items (retro_id FK, archive_id FK, category, vote_count)       │   │
+│  │  ├── action_items (retro_id FK, archive_id FK, done, archived)      │   │
+│  │  ├── archives (retro_id FK)                                         │   │
+│  │  ├── users (email, name, company_name)                              │   │
+│  │  └── admin_users (Devise auth)                                      │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Data Model
+
+```
+┌──────────────────┐       ┌──────────────────┐       ┌──────────────────┐
+│      User        │       │      Retro       │       │     Archive      │
+├──────────────────┤       ├──────────────────┤       ├──────────────────┤
+│ id               │       │ id               │       │ id               │
+│ email (unique)   │──────<│ user_id (opt)    │>──────│ retro_id         │
+│ name             │       │ slug (unique)    │       │ created_at       │
+│ company_name     │       │ name             │       └────────┬─────────┘
+│ created_at       │       │ encrypted_pass   │                │
+└──────────────────┘       │ salt             │                │
+                           │ join_token       │                │
+                           │ is_private       │                │
+                           │ is_magic_link    │                │
+                           │ video_link       │                │
+                           │ highlighted_item │────┐           │
+                           │ item_order       │    │           │
+                           └────────┬─────────┘    │           │
+                                    │              │           │
+                    ┌───────────────┴──────────────┤           │
+                    │                              │           │
+                    ▼                              │           ▼
+┌──────────────────────────────────┐               │  ┌──────────────────┐
+│             Item                 │<──────────────┘  │                  │
+├──────────────────────────────────┤                  │                  │
+│ id                               │                  │                  │
+│ retro_id (optional)              │>─────────────────│ archive_id (opt) │
+│ archive_id (optional)            │                  │                  │
+│ category (happy/meh/sad)         │                  └──────────────────┘
+│ description                      │
+│ vote_count (default: 0)          │
+│ done (boolean)                   │
+│ archived (boolean)               │
+│ archived_at                      │
+└──────────────────────────────────┘
+
+┌──────────────────────────────────┐
+│          ActionItem              │
+├──────────────────────────────────┤
+│ id                               │
+│ retro_id (optional)              │
+│ archive_id (optional)            │
+│ description                      │
+│ done (boolean)                   │
+│ archived (boolean)               │
+│ archived_at                      │
+└──────────────────────────────────┘
+```
+
+## Request Flow
+
+```
+User Action                    Controller                 Model                  Real-Time
+───────────────────────────────────────────────────────────────────────────────────────────
+
+1. Vote on Item
+   ┌─────────┐
+   │ Click ♡ │
+   └────┬────┘
+        │ POST /retros/:slug/items/:id/vote
+        ▼
+   ┌──────────────────┐
+   │ ItemsController  │
+   │ #vote            │
+   └────────┬─────────┘
+            │ item.vote!
+            ▼
+   ┌──────────────────┐
+   │ Item Model       │
+   │ increment!       │
+   │ :vote_count      │
+   └────────┬─────────┘
+            │ after_update_commit
+            ▼
+   ┌──────────────────┐        ┌──────────────────┐
+   │ broadcast_       │───────>│ All Connected    │
+   │ replace_to       │        │ Browsers Update  │
+   └──────────────────┘        └──────────────────┘
+
+
+2. Create New Item
+   ┌────────────┐
+   │ Submit     │
+   │ Form       │
+   └─────┬──────┘
+         │ POST /retros/:slug/items
+         ▼
+   ┌──────────────────┐
+   │ ItemsController  │
+   │ #create          │
+   └────────┬─────────┘
+            │ @retro.items.create!(params)
+            ▼
+   ┌──────────────────┐
+   │ Item Model       │
+   │ create!          │
+   └────────┬─────────┘
+            │ after_create_commit
+            ▼
+   ┌──────────────────┐        ┌──────────────────┐
+   │ broadcast_       │───────>│ Append to        │
+   │ append_to        │        │ category-items   │
+   └──────────────────┘        └──────────────────┘
+
+
+3. Highlight for Discussion
+   ┌─────────────┐
+   │ Click Item  │
+   │ Text        │
+   └──────┬──────┘
+          │ POST /retros/:slug/items/:id/highlight
+          ▼
+   ┌──────────────────┐
+   │ ItemsController  │
+   │ #highlight       │
+   └────────┬─────────┘
+            │ @retro.update!(highlighted_item_id: @item.id)
+            ▼
+   ┌──────────────────┐
+   │ Turbo Stream     │
+   │ Response         │
+   └────────┬─────────┘
+            │ turbo_stream.replace :highlighted-item
+            ▼
+   ┌──────────────────┐        ┌──────────────────┐
+   │ Discussion       │───────>│ All Users See    │
+   │ Panel Appears    │        │ Same Item        │
+   └──────────────────┘        └──────────────────┘
+```
+
+## Authentication Flow
+
+```
+                    ┌─────────────────────────┐
+                    │   User visits           │
+                    │   /retros/my-retro      │
+                    └───────────┬─────────────┘
+                                │
+                                ▼
+                    ┌─────────────────────────┐
+                    │   Is retro private?     │
+                    └───────────┬─────────────┘
+                                │
+              ┌─────────────────┼─────────────────┐
+              │ NO              │                 │ YES
+              ▼                 │                 ▼
+┌─────────────────────┐         │   ┌─────────────────────────┐
+│   Show retro page   │         │   │   Check session         │
+│   immediately       │         │   │   [:retro_sessions]     │
+└─────────────────────┘         │   │   [slug]                │
+                                │   └───────────┬─────────────┘
+                                │               │
+                                │   ┌───────────┼───────────┐
+                                │   │ EXISTS    │           │ MISSING
+                                │   ▼           │           ▼
+                                │ ┌─────────────┴─────┐   ┌─────────────────────┐
+                                │ │ Show retro page   │   │ Redirect to         │
+                                │ └───────────────────┘   │ /retros/slug/login  │
+                                │                         └───────────┬─────────┘
+                                │                                     │
+                                │                                     ▼
+                                │                         ┌─────────────────────┐
+                                │                         │   Password Login    │
+                                │                         │   OR                │
+                                │                         │   Magic Link        │
+                                │                         │   /join/:token      │
+                                │                         └───────────┬─────────┘
+                                │                                     │
+                                │                                     ▼
+                                │                         ┌─────────────────────┐
+                                │                         │   Validate &        │
+                                │                         │   Store session     │
+                                └─────────────────────────┤   [:retro_sessions] │
+                                                          │   [slug]            │
+                                                          └─────────────────────┘
+```
+
+## Domain Logic: Retro Facilitator
+
+The RetroFacilitator uses a Chain of Responsibility pattern to order items for discussion:
+
+```
+┌────────────────────────────────────────────────────────────────────────────┐
+│                         RETRO FACILITATOR                                   │
+│                                                                             │
+│   Input: retro.items (unordered)                                           │
+│                                                                             │
+│   ┌──────────────────┐                                                     │
+│   │ NoDoneItemsRule  │ ──> Filters out completed items                     │
+│   └────────┬─────────┘                                                     │
+│            │                                                                │
+│            ▼                                                                │
+│   ┌──────────────────────┐                                                 │
+│   │ EndWithHappiestRule  │ ──> Moves highest-voted happy item to end       │
+│   └────────┬─────────────┘                                                 │
+│            │                                                                │
+│            ▼                                                                │
+│   ┌──────────────────┐                                                     │
+│   │ OrderByVoteRule  │ ──> Sorts by vote_count descending                  │
+│   └────────┬─────────┘                                                     │
+│            │                                                                │
+│            ▼                                                                │
+│   ┌────────────────────┐                                                   │
+│   │ HappyMehSadOrder   │ ──> Organizes into columns, rotates based on      │
+│   │ Rule               │     last highlighted item category                 │
+│   └────────────────────┘                                                   │
+│                                                                             │
+│   Output: Ordered list optimized for productive discussion                  │
+└────────────────────────────────────────────────────────────────────────────┘
+```
+
+## JavaScript Controllers (Stimulus)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        STIMULUS CONTROLLERS                                  │
+│                                                                              │
+│  ┌─────────────────────┐   ┌─────────────────────┐   ┌──────────────────┐  │
+│  │   ItemController    │   │ InputPromptCtrl     │   │  VoteController  │  │
+│  ├─────────────────────┤   ├─────────────────────┤   ├──────────────────┤  │
+│  │ Targets:            │   │ Targets:            │   │ Targets:         │  │
+│  │ - display           │   │ - prompt            │   │ - count          │  │
+│  │ - form              │   │ - input             │   │ - button         │  │
+│  │ - input             │   │                     │   │                  │  │
+│  │                     │   │ Actions:            │   │ Actions:         │  │
+│  │ Actions:            │   │ - focus()           │   │ - vote()         │  │
+│  │ - edit()            │   │ - blur()            │   │                  │  │
+│  │ - cancel()          │   │                     │   │                  │  │
+│  │ - keydown()         │   │                     │   │                  │  │
+│  └─────────────────────┘   └─────────────────────┘   └──────────────────┘  │
+│                                                                              │
+│  ┌─────────────────────┐   ┌─────────────────────┐                         │
+│  │  HotkeysController  │   │  FlashController    │                         │
+│  ├─────────────────────┤   ├─────────────────────┤                         │
+│  │ Values:             │   │                     │                         │
+│  │ - retroId           │   │ Auto-dismiss flash  │                         │
+│  │                     │   │ messages            │                         │
+│  │ Shortcuts:          │   │                     │                         │
+│  │ - → Next item       │   │                     │                         │
+│  │ - ← Prev item       │   │                     │                         │
+│  │ - Esc Unhighlight   │   │                     │                         │
+│  └─────────────────────┘   └─────────────────────┘                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Directory Structure
+
+```
+postfacto/
+├── api/                              # Rails API + Hotwire
+│   ├── app/
+│   │   ├── admin/                    # ActiveAdmin resources
+│   │   ├── channels/                 # ActionCable (infrastructure only)
+│   │   │   └── application_cable/
+│   │   │       ├── channel.rb
+│   │   │       └── connection.rb
+│   │   ├── controllers/
+│   │   │   ├── api/                  # Legacy REST API (unused)
+│   │   │   └── hotwire/              # Hotwire controllers
+│   │   │       ├── base_controller.rb
+│   │   │       ├── retros_controller.rb
+│   │   │       ├── items_controller.rb
+│   │   │       ├── action_items_controller.rb
+│   │   │       ├── sessions_controller.rb
+│   │   │       └── archives_controller.rb
+│   │   ├── domain/                   # Business logic
+│   │   │   └── retro_facilitator.rb
+│   │   ├── helpers/                  # View helpers
+│   │   ├── javascript/
+│   │   │   ├── controllers/          # Stimulus controllers
+│   │   │   │   ├── item_controller.js
+│   │   │   │   ├── input_prompt_controller.js
+│   │   │   │   ├── vote_controller.js
+│   │   │   │   ├── hotkeys_controller.js
+│   │   │   │   └── ...
+│   │   │   └── application.js
+│   │   ├── models/                   # ActiveRecord models
+│   │   │   ├── retro.rb
+│   │   │   ├── item.rb
+│   │   │   ├── action_item.rb
+│   │   │   ├── archive.rb
+│   │   │   └── user.rb
+│   │   ├── services/                 # Service objects
+│   │   │   └── retro_archive_service.rb
+│   │   └── views/
+│   │       ├── hotwire/              # Hotwire views
+│   │       │   ├── retros/
+│   │       │   ├── items/
+│   │       │   ├── action_items/
+│   │       │   └── archives/
+│   │       └── layouts/
+│   │           └── hotwire.html.erb
+│   ├── config/
+│   │   ├── routes.rb
+│   │   └── ...
+│   ├── db/
+│   │   ├── migrate/
+│   │   └── schema.rb
+│   └── spec/                         # RSpec tests
+│
+├── web/                              # Legacy React frontend (unused)
+│   └── ...
+│
+└── docs/                             # Documentation
+```
+
+## Technology Stack
+
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| Web Server | Puma | Multi-threaded request handling |
+| Framework | Rails 8.x | MVC + Hotwire |
+| Real-Time | Turbo Streams | Server-sent DOM updates |
+| Interactivity | Stimulus | Lightweight JS controllers |
+| Database | SQLite/PostgreSQL | Data persistence |
+| Auth | BCrypt + Sessions | Password hashing, session storage |
+| Admin | ActiveAdmin + Devise | Admin dashboard |
+| Styling | Tailwind CSS | Utility-first CSS |
+| Assets | Importmap | No-build JS imports |

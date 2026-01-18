@@ -54,8 +54,12 @@ module Hotwire
     # Handle magic link authentication
     def magic_link
       if @retro.magic_link_enabled? && @retro.validate_join_token?(params[:token])
-        store_retro_session(@retro)
-        redirect_to retro_path(@retro)
+        if @retro.magic_link_expired?
+          redirect_to retro_login_path(@retro), alert: 'This magic link has expired. Please request a new one.'
+        else
+          store_retro_session(@retro)
+          redirect_to retro_path(@retro)
+        end
       else
         redirect_to retro_login_path(@retro), alert: 'Invalid or expired magic link.'
       end

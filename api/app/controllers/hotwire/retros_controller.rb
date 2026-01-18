@@ -38,11 +38,7 @@ module Hotwire
     end
 
     def show
-      @items_by_category = {
-        happy: @retro.items.happy.order(created_at: :asc),
-        meh: @retro.items.meh.order(created_at: :asc),
-        sad: @retro.items.sad.order(created_at: :asc)
-      }
+      @items_by_category = @retro.items.grouped_by_category
       @action_items = @retro.action_items.order(created_at: :asc)
       @highlighted_item = @retro.items.find_by(id: @retro.highlighted_item_id) if @retro.highlighted_item_id
     end

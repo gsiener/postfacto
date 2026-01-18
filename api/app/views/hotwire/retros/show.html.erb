@@ -47,86 +47,45 @@
   <div class="flex-1 flex flex-col overflow-hidden">
     <%# Three Columns - Happy, Meh, Sad %>
     <div class="flex-1 grid grid-cols-1 md:grid-cols-3 overflow-hidden">
-      <%# Happy Column - Teal %>
-      <div class="flex flex-col overflow-hidden relative" style="background-color: #4ecdc4;">
-        <div class="flex justify-center" style="margin-top: -28px;">
-          <span style="font-size: 56px;">😃</span>
-        </div>
-        <div class="px-3 pb-3 pt-1">
-          <div id="new-happy-item-form" data-controller="input-prompt">
-            <div data-input-prompt-target="prompt" class="rounded-md px-4 py-3 mb-3" style="background-color: #3dbdb5;">
-              <span class="text-white text-sm">I'm glad that...</span>
+      <% %w[happy meh sad].each do |cat| %>
+        <% colors = category_colors(cat) %>
+        <% prompt_text = case cat
+           when 'happy' then "I'm glad that..."
+           when 'meh' then "I'm wondering about..."
+           when 'sad' then "It wasn't so great that..."
+           end %>
+        <% emoji = case cat
+           when 'happy' then '😃'
+           when 'meh' then '🤨'
+           when 'sad' then '😢'
+           end %>
+        <%# <%= cat.capitalize %> Column %>
+        <div class="flex flex-col overflow-hidden relative" style="background-color: <%= colors[:bg] %>;">
+          <div class="flex justify-center" style="margin-top: -28px;">
+            <span style="font-size: 56px;"><%= emoji %></span>
+          </div>
+          <div class="px-3 pb-3 pt-1">
+            <div id="new-<%= cat %>-item-form" data-controller="input-prompt" data-input-prompt-input-bg-value="<%= colors[:input_bg] %>">
+              <div data-input-prompt-target="prompt" class="rounded-md px-4 py-3 mb-3" style="background-color: <%= colors[:prompt_bg] %>;">
+                <span class="text-white text-sm"><%= prompt_text %></span>
+              </div>
+              <%= form_with model: Item.new, url: retro_items_path(@retro), data: { turbo_stream: true } do |f| %>
+                <%= f.hidden_field :category, value: cat %>
+                <%= f.text_area :description,
+                    placeholder: prompt_text,
+                    rows: 1,
+                    class: 'block w-full rounded-md border-0 text-sm py-3 px-4 resize-none focus:ring-0 transition-all placeholder-gray-400',
+                    style: "background-color: #{colors[:input_bg]}; min-height: 44px;",
+                    autocomplete: 'off',
+                    data: { input_prompt_target: 'input', action: 'focus->input-prompt#focus blur->input-prompt#blur' } %>
+              <% end %>
             </div>
-            <%= form_with model: Item.new, url: retro_items_path(@retro), data: { turbo_stream: true } do |f| %>
-              <%= f.hidden_field :category, value: 'happy' %>
-              <%= f.text_area :description,
-                  placeholder: "I'm glad that...",
-                  rows: 1,
-                  class: 'block w-full rounded-md border-0 text-sm py-3 px-4 resize-none focus:ring-0 transition-all placeholder-gray-400',
-                  style: 'background-color: #e0f2f1; min-height: 44px;',
-                  autocomplete: 'off',
-                  data: { input_prompt_target: 'input', action: 'focus->input-prompt#focus blur->input-prompt#blur' } %>
-            <% end %>
+          </div>
+          <div class="flex-1 overflow-y-auto px-3 pb-3" id="<%= cat %>-column-content">
+            <%= render 'hotwire/retros/column_items', retro: @retro, category: cat, items: @items_by_category[cat.to_sym] %>
           </div>
         </div>
-        <div class="flex-1 overflow-y-auto px-3 pb-3" id="happy-column-content">
-          <%= render 'hotwire/retros/column_items', retro: @retro, category: 'happy', items: @items_by_category[:happy] %>
-        </div>
-      </div>
-
-      <%# Meh Column - Yellow %>
-      <div class="flex flex-col overflow-hidden relative" style="background-color: #f5c242;">
-        <div class="flex justify-center" style="margin-top: -28px;">
-          <span style="font-size: 56px;">🤨</span>
-        </div>
-        <div class="px-3 pb-3 pt-1">
-          <div id="new-meh-item-form" data-controller="input-prompt">
-            <div data-input-prompt-target="prompt" class="rounded-md px-4 py-3 mb-3" style="background-color: #d4a017;">
-              <span class="text-white text-sm">I'm wondering about...</span>
-            </div>
-            <%= form_with model: Item.new, url: retro_items_path(@retro), data: { turbo_stream: true } do |f| %>
-              <%= f.hidden_field :category, value: 'meh' %>
-              <%= f.text_area :description,
-                  placeholder: "I'm wondering about...",
-                  rows: 1,
-                  class: 'block w-full rounded-md border-0 text-sm py-3 px-4 resize-none focus:ring-0 transition-all placeholder-gray-400',
-                  style: 'background-color: #fef9e7; min-height: 44px;',
-                  autocomplete: 'off',
-                  data: { input_prompt_target: 'input', action: 'focus->input-prompt#focus blur->input-prompt#blur' } %>
-            <% end %>
-          </div>
-        </div>
-        <div class="flex-1 overflow-y-auto px-3 pb-3" id="meh-column-content">
-          <%= render 'hotwire/retros/column_items', retro: @retro, category: 'meh', items: @items_by_category[:meh] %>
-        </div>
-      </div>
-
-      <%# Sad Column - Red %>
-      <div class="flex flex-col overflow-hidden relative" style="background-color: #e74c3c;">
-        <div class="flex justify-center" style="margin-top: -28px;">
-          <span style="font-size: 56px;">😢</span>
-        </div>
-        <div class="px-3 pb-3 pt-1">
-          <div id="new-sad-item-form" data-controller="input-prompt">
-            <div data-input-prompt-target="prompt" class="rounded-md px-4 py-3 mb-3" style="background-color: #c0392b;">
-              <span class="text-white text-sm">It wasn't so great that...</span>
-            </div>
-            <%= form_with model: Item.new, url: retro_items_path(@retro), data: { turbo_stream: true } do |f| %>
-              <%= f.hidden_field :category, value: 'sad' %>
-              <%= f.text_area :description,
-                  placeholder: "It wasn't so great that...",
-                  rows: 1,
-                  class: 'block w-full rounded-md border-0 text-sm py-3 px-4 resize-none focus:ring-0 transition-all placeholder-gray-400',
-                  style: 'background-color: #fce4e4; min-height: 44px;',
-                  autocomplete: 'off',
-                  data: { input_prompt_target: 'input', action: 'focus->input-prompt#focus blur->input-prompt#blur' } %>
-            <% end %>
-          </div>
-        </div>
-        <div class="flex-1 overflow-y-auto px-3 pb-3" id="sad-column-content">
-          <%= render 'hotwire/retros/column_items', retro: @retro, category: 'sad', items: @items_by_category[:sad] %>
-        </div>
-      </div>
+      <% end %>
     </div>
 
     <%# Action Items - Below the columns %>

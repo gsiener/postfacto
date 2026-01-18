@@ -28,19 +28,27 @@
 #
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-class ActionItem < ActiveRecord::Base
-  include Ransackable
+module RetrosHelper
+  # Groups action items by date into Today, Past Week, and Older categories.
+  # Returns a hash with :grouped (the grouped items hash) and :group_order (array of labels in display order)
+  def group_action_items_by_date(action_items)
+    today = Date.today
+    one_week_ago = today - 7
+    today_label = "Today (#{today.strftime('%B %d, %Y')})"
 
-  belongs_to :retro, optional: true
-  belongs_to :archive, optional: true
+    grouped = action_items.group_by do |item|
+      item_date = item.created_at.to_date
+      if item_date == today
+        today_label
+      elsif item_date > one_week_ago
+        'Past Week'
+      else
+        'Older'
+      end
+    end
 
-  validates :description, presence: true
+    group_order = [today_label, 'Past Week', 'Older']
 
-  # Turbo Stream broadcasts for real-time updates
-  after_create_commit -> { broadcast_append_to retro, target: "action-items", partial: "hotwire/action_items/action_item", locals: { action_item: self, retro: retro } }
-  after_update_commit -> { broadcast_replace_to retro, partial: "hotwire/action_items/action_item", locals: { action_item: self, retro: retro } }
-  after_destroy_commit -> { broadcast_remove_to retro }
-
-  ransackable attributes: %w[id description done created_at updated_at archived_at archived retro_id archive_id],
-              associations: %w[archive retro]
+    { grouped: grouped, group_order: group_order }
+  end
 end
