@@ -6,6 +6,7 @@
     <title><%= content_for(:title) || "Postfacto" %></title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <%= favicon_link_tag "favicon.ico" %>
 
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <script type="module">
