@@ -10,6 +10,7 @@ services:
     runtime: ruby
     rubyVersion: "3.3"
     plan: free
+    rootDirectory: api
     buildCommand: "./bin/render-build.sh"
     startCommand: "bundle exec puma -C config/puma.rb"
     envVars:
