@@ -59,32 +59,4 @@ Rails.application.routes.draw do
   end
 
   get '/join/:token', to: 'hotwire/sessions#magic_link', as: :magic_link
-
-  # Legacy API (keep for backwards compatibility)
-  scope '/api' do
-    put '/retros/:id/archive', to: 'retros#archive'
-    patch '/retros/:id/password', to: 'retros#update_password', as: :retro_update_password
-
-    get '/config', to: 'config#show'
-
-    resources :oauth_sessions, path: 'sessions', only: [:create]
-    resources :users, only: [:create]
-
-    resources :retros, only: [:index, :create, :show, :update] do
-      resources :archives, only: [:index, :show]
-      resources :settings, only: [:index]
-      resources :action_items, only: [:create, :destroy, :update]
-      resources :items, only: [:create, :update, :destroy] do
-        member do
-          patch 'done'
-          post 'vote'
-        end
-      end
-      resource :discussion, only: [:create, :destroy, :update] do
-        post 'transitions', controller: 'transitions'
-      end
-
-      resources :sessions, only: [:new, :create]
-    end
-  end
 end
