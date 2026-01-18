@@ -5,11 +5,6 @@ Expostfacto is a modernized fork of [VMware's Postfacto](https://github.com/vmwa
 
 > **Name Credit**: The name "Expostfacto" was suggested by [@flavorjones](https://github.com/flavorjones) - a clever play on "ex post facto" meaning "from a thing done afterward."
 
-<p align="center">
-  <img width="700px" src="https://github.com/pivotal/postfacto/blob/master/media/sample-retro.gif?raw=true" />
-</p>
-
-
 ## Features
 
 ### Run Retros Remotely
